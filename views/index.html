@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="../static/img/favicon.png">
+    <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/node_modules/xterm/dist/xterm.css">
+    <script type="text/javascript" src="../static/node_modules/xterm/dist/xterm.js"></script>
+    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
+    <title>SMA Web Console</title>
+</head>
+<header>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/">SMA Web-Console</a>
+            <div class="collapse navbar-collapse" id="navbarColor02">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Services<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Steps<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logs<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<body>
+    <div id="terminal" class="container" style="margin: auto auto;"></div>
+    <script>
+        import {
+            Terminal
+        } from 'xterm';
+        import {
+            WebLinksAddon
+        } from 'xterm-addon-web-links';
+
+        const terminal = new Terminal();
+        // Load WebLinksAddon on terminal, this is all that's needed to get web links
+        // working in the terminal.
+        terminal.loadAddon(new WebLinksAddon());
+    </script>
+</body>
+<footer></footer>
+
+</html>
