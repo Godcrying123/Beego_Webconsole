@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
+    <title>Service List</title>
+</head>
+<div>
+    <form method="POST" action="/service" target="iframe">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Service Name</th>
+                    <th>Service Version</th>
+                </tr>
+            </thead>
+            <tbody id="service_tbody">
+                <tr id="service_row1">
+                    <td><input type="text" name="service_name" placeholder="Input Service Name" /></td>
+                    <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
+                </tr>
+                <tr id="service_row2">
+                    <td><input type="text" name="service_name" placeholder="Input Service Name" /></td>
+                    <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Last Modified: 2019-06-27 15:04:05</td>
+                </tr>
+            </tfoot>
+        </table>
+        <input type="submit" name="exportall" value="Export All" />
+        <input type="submit" name="importall" value="Import All" />
+        <input type="button" id="addservice" value="Add Service" />
+    </form>
+    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+    <script>
+        $("#addservice").click(function() {
+            //var $targetTbody = $("#service_tbody");
+            //var $tr = $targetTbody.children("tr:last");
+            //$tr.after($tr[0].outerHTML);
+            var new_tr = $("#service_row2").html();
+            $("#service_tbody").append("<tr>" + new_tr + "</tr>");
+        })
+    </script>
+</div>
+
+
+
+</html>

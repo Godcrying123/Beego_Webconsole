@@ -36,17 +36,9 @@
 <body>
     <div id="terminal" class="container" style="margin: auto auto;"></div>
     <script>
-        import {
-            Terminal
-        } from 'xterm';
-        import {
-            WebLinksAddon
-        } from 'xterm-addon-web-links';
-
-        const terminal = new Terminal();
-        // Load WebLinksAddon on terminal, this is all that's needed to get web links
-        // working in the terminal.
-        terminal.loadAddon(new WebLinksAddon());
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'));
+        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
     </script>
 </body>
 <footer></footer>

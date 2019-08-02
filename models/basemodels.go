@@ -16,14 +16,19 @@ type Machine struct {
 	FireFall   string
 }
 
-type Services struct {
-	ID               int64
-	ServiceName      string
-	ServiceVersion   string
-	Status           string
-	StatusCommand    string
-	LogPath          string
-	LastModifiedTime time.Time
+type Service struct {
+	ID                     int64  `form:"-"`
+	ServiceName            string `form:"service_name"`
+	ServiceVersion         string `form:"service_version"`
+	Status                 bool
+	LastStatusModifiedTime time.Time
+}
+
+type UnitServices struct {
+	Service               Service
+	StatusCommand         string
+	LogPath               string
+	LastFiledModifiedTime time.Time
 }
 
 type Steps struct {
@@ -48,3 +53,5 @@ type Files struct {
 	FileOwnerShip    string
 	FileContent      string
 }
+
+func init() {}
