@@ -18,24 +18,25 @@
             </thead>
             <tbody id="service_tbody">
                 <tr id="service_row1">
-                    <td><input type="text" name="service_name" placeholder="Input Service Name" /></td>
+                    <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
                     <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
                 </tr>
                 <tr id="service_row2">
-                    <td><input type="text" name="service_name" placeholder="Input Service Name" /></td>
+                    <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
                     <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
                 </tr>
             </tbody>
             <tfoot>
+                <tr>
+                    <td><input type="button" id="addservice" value="Add Service" /></td>
+                    <td><input type="submit" name="exportall" value="Export All" /></td>
+                </tr>
                 <tr>
                     <td></td>
                     <td>Last Modified: 2019-06-27 15:04:05</td>
                 </tr>
             </tfoot>
         </table>
-        <input type="submit" name="exportall" value="Export All" />
-        <input type="submit" name="importall" value="Import All" />
-        <input type="button" id="addservice" value="Add Service" />
     </form>
     <iframe id="iframe" name="iframe" style="display:none;"></iframe>
     <script>
