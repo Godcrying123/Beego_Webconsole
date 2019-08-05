@@ -17,10 +17,12 @@
                 </tr>
             </thead>
             <tbody>
+                {{range .services}}
                 <tr>
-                    <td>&nbsp</td>
-                    <td>&nbsp</td>
+                    <td>{{.ServiceName}}</td>
+                    <td>{{.ServiceVersion}}</td>
                 </tr>
+                {{end}}
             </tbody>
             <tfoot>
                 <tr>
@@ -32,7 +34,6 @@
         <input type="file" name="importfile" />
         <input type="submit" name="importall" value="Import All" />
     </form>
-    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
     <script>
     </script>
 </div>

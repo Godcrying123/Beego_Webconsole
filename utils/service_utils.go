@@ -13,10 +13,11 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/bitly/go-simplejson"
+	"github.com/mitchellh/mapstructure"
 )
 
 type ServiceSlice struct {
-	Services []models.Service
+	Services []models.Service `json:"service"`
 }
 
 func init() {}
@@ -42,6 +43,7 @@ func Services_JsonGenerator(services map[string]models.Service) (message string,
 				return "", err
 			}
 			builder.Write(output)
+
 			builder.Write([]byte("\n"))
 		}
 
@@ -62,28 +64,37 @@ func Services_JsonGenerator(services map[string]models.Service) (message string,
 }
 
 func Services_JsonRead(filePath string) (jsonStruct map[string]models.Service, err error) {
-	jsonFile, err := os.Open(filePath)
+	//jsonFile, err := ioutil.ReadFile(filePath)
+	jsonStruct1 := make(map[string]models.Service)
 	if err != nil {
 		beego.Error(err)
 	}
-	//var services_list ServiceSlice
-	jsonString, err := Json_to_byte(jsonFile)
-	defer jsonFile.Close()
-	if err != nil {
-		beego.Error(err)
-	}
-	res, err := simplejson.NewJson([]byte(jsonString))
-	if err != nil {
-		beego.Error(err)
-	} else {
-		servicename_list, _ := res.Get("ServiceName").StringArray()
-		beego.Info(servicename_list)
-		//serviceversion_list, err := res.Get("ServiceVersion").StringArray()
-		for name := range servicename_list {
-			beego.Info(name)
+	//jsonData := ServiceSlice{}
+	str := `[{
+		"ID": 0,
+		"ServiceName": "test3",
+		"ServiceVersion": "3",
+		"Status": false
+	}, 
+	{
+		"ID": 1,
+		"ServiceName": "test4",
+		"ServiceVersion": "4",
+		"Status": false
+	}]`
+	jsons, _ := simplejson.NewJson([]byte(str))
+	for _, jsonmap := range jsons.MustArray() {
+		service := models.Service{}
+		//fmt.Printf("%T\n", jsonmap.(map[string]interface{}))
+		err = mapstructure.WeakDecode(jsonmap.(map[string]interface{}), &service)
+		if err != nil {
+			beego.Error(err)
 		}
+		service.LastStatusModifiedTime = time.Now()
+		jsonStruct1[service.ServiceName] = service
 	}
-	return
+	return jsonStruct1, err
+
 }
 
 func Service_List() {

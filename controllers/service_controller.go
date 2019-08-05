@@ -14,17 +14,16 @@ import (
 	"github.com/astaxie/beego"
 )
 
+var jsonStruct map[string]models.Service
+
 type ServiceController struct {
 	beego.Controller
 }
 
-func (c *ServiceController) Get() {
-	c.TplName = "service_upload.html"
-}
-
-func (this *ServiceController) Post1() {
-	this.TplName = "service.html"
-
+func (this *ServiceController) Get() {
+	this.TplName = "service_upload.html"
+	beego.Info(jsonStruct)
+	this.Data["services"] = jsonStruct
 }
 
 func (this *ServiceController) Post() {
@@ -37,7 +36,6 @@ func (this *ServiceController) Post() {
 		this.Export()
 	} else if btn_import != "" {
 		this.Import()
-		beego.Info(btn_import)
 	}
 }
 
@@ -90,8 +88,11 @@ func (this *ServiceController) Import() {
 		beego.Error(err)
 	}
 	beego.Info("Upload Successfully")
-	_, err = utils.Services_JsonRead(filePath)
+	jsonStruct, err = utils.Services_JsonRead(filePath)
+	beego.Info(jsonStruct)
+	this.Data["services"] = jsonStruct
 	if err != nil {
 		beego.Error(err)
 	}
+	this.Redirect("/service", 302)
 }
