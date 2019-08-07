@@ -50,7 +50,7 @@ func (this *ServiceController) Export() {
 		}
 		services[services_name[index]] = service_struct
 	}
-	message, err := utils.Services_JsonGenerator(services)
+	message, err := utils.ServicesJsonGenerator(services)
 	if err != nil {
 		beego.Error(err)
 	}
@@ -88,7 +88,7 @@ func (this *ServiceController) Import() {
 		beego.Error(err)
 	}
 	beego.Info("Upload Successfully")
-	jsonStruct, err = utils.Services_JsonRead(filePath)
+	jsonStruct, err = utils.ServicesJsonRead(filePath)
 	beego.Info(jsonStruct)
 	this.Data["services"] = jsonStruct
 	if err != nil {

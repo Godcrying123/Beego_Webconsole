@@ -17,18 +17,19 @@ type Machine struct {
 }
 
 type Service struct {
-	ID                     int64  `form:"-"`
-	ServiceName            string `form:"service_name"`
-	ServiceVersion         string `form:"service_version"`
-	Status                 bool
-	LastStatusModifiedTime time.Time
+	ID             int64  `form:"-"`
+	ServiceName    string `form:"service_name"`
+	ServiceVersion string `form:"service_version"`
+	ActiveStatus   bool
+	RunningStatus  bool
 }
 
 type UnitServices struct {
-	Service               Service
-	StatusCommand         string
-	LogPath               string
-	LastFiledModifiedTime time.Time
+	Service                Service
+	StatusCommand          string
+	LogPath                string
+	LastStatusModifiedTime time.Time
+	LastFiledModifiedTime  time.Time
 }
 
 type Steps struct {

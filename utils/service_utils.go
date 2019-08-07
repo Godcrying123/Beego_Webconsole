@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
-	"time"
 	"webconsole_sma/models"
 
 	"github.com/astaxie/beego"
@@ -22,7 +22,7 @@ type ServiceSlice struct {
 
 func init() {}
 
-func Services_JsonGenerator(services map[string]models.Service) (message string, err error) {
+func ServicesJsonGenerator(services map[string]models.Service) (message string, err error) {
 	//err_chan := make(chan error)
 	//output_chan := make(chan []byte, 3)
 	//var wg sync.WaitGroup
@@ -36,19 +36,17 @@ func Services_JsonGenerator(services map[string]models.Service) (message string,
 		} else {
 			service_entity.ID = index
 			index++
-			service_entity.LastStatusModifiedTime = time.Now()
 			output, err := json.MarshalIndent(service_entity, "", "\t")
 			if err != nil {
 				beego.Error(err)
 				return "", err
 			}
 			builder.Write(output)
-
-			builder.Write([]byte("\n"))
+			builder.WriteString(",\n")
 		}
 
 	}
-	jsonOutPutDate := builder.String()
+	jsonOutPutDate := strings.TrimRight(builder.String(), ",\n")
 	os.Stdout.Write([]byte(jsonOutPutDate))
 	oldMask := syscall.Umask(0)
 	filepath := "json/requirements_services.json"
@@ -63,59 +61,64 @@ func Services_JsonGenerator(services map[string]models.Service) (message string,
 	return "all services has been exported to JSON successfully!", nil
 }
 
-func Services_JsonRead(filePath string) (jsonStruct map[string]models.Service, err error) {
-	//jsonFile, err := ioutil.ReadFile(filePath)
+func ServicesJsonRead(filePath string) (jsonStruct map[string]models.Service, err error) {
+	var byter bytes.Buffer
+	jsonFile, err := ioutil.ReadFile(filePath)
 	jsonStruct1 := make(map[string]models.Service)
 	if err != nil {
 		beego.Error(err)
 	}
-	//jsonData := ServiceSlice{}
-	str := `[{
-		"ID": 0,
-		"ServiceName": "test3",
-		"ServiceVersion": "3",
-		"Status": false
-	}, 
-	{
-		"ID": 1,
-		"ServiceName": "test4",
-		"ServiceVersion": "4",
-		"Status": false
-	}]`
-	jsons, _ := simplejson.NewJson([]byte(str))
+	byter.Write([]byte("["))
+	byter.Write(jsonFile)
+	byter.Write([]byte("]"))
+	jsons, _ := simplejson.NewJson(byter.Bytes())
 	for _, jsonmap := range jsons.MustArray() {
 		service := models.Service{}
-		//fmt.Printf("%T\n", jsonmap.(map[string]interface{}))
 		err = mapstructure.WeakDecode(jsonmap.(map[string]interface{}), &service)
 		if err != nil {
 			beego.Error(err)
 		}
-		service.LastStatusModifiedTime = time.Now()
 		jsonStruct1[service.ServiceName] = service
 	}
 	return jsonStruct1, err
-
 }
 
-func Service_List() {
-	// check all services in this machine
-
-}
-
-func Json_to_byte(file *os.File) (string, error) {
-	var builder strings.Builder
-Loop:
-	for {
-		buf := make([]byte, 1024)
-		switch nr, err := file.Read(buf[:]); true {
-		case nr < 0:
-			fmt.Fprintf(os.Stderr, "Json_to_byte: error reading %s\n", err.Error())
-			return "", err
-		case nr > 0:
-			builder.Write(buf)
-		case nr == 0:
-			break Loop
-		}
+func ServiceList() ([]string, error) {
+	cmdservicelist := "systemctl list-units --all|head -n -7|awk 'NR>1{print $0}'"
+	serviceslist, err := CommandExecReturnSlices(cmdservicelist)
+	if err != nil {
+		beego.Error(err)
+		return nil, err
 	}
-	return builder.String(), nil
+	for _, serviceitem := range serviceslist {
+		fmt.Println(serviceitem)
+	}
+	return serviceslist, nil
+}
+
+func ServiceStatus(servicename string) (string, error) {
+	var builder strings.Builder
+	builder.WriteString("systemctl -a |grep ")
+	builder.WriteString("'")
+	builder.WriteString(servicename)
+	builder.WriteString(".service'|awk '{print $3 FS $4}'")
+	servicestatus, err := CommandExecReturnString(builder.String())
+	if err != nil {
+		beego.Error(err)
+		return "", err
+	}
+	return servicestatus, nil
+}
+
+func ServiceDetail(servicename string) (string, error) {
+	var builder strings.Builder
+	builder.Write([]byte("systemctl status -l "))
+	builder.Write([]byte(servicename))
+	builder.Write([]byte(".service"))
+	servicedetail, err := CommandExecReturnString(builder.String())
+	if err != nil {
+		beego.Error(err)
+		return "", err
+	}
+	return servicedetail, nil
 }
