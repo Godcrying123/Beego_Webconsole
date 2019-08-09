@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.css">
+    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
+    <title>Service List</title>
+</head>
+<div style="width:20%">
+    <div class="list-group">
+        <a href="" class="list-group-item list-group-item-action active">Machine Info</a>
+        <a class="list-group-item list-group-item-action">Hostname: {{ .hostname }}</a>
+        <a class="list-group-item list-group-item-action">OS: {{ .os }}</a>
+        <a href="" class="list-group-item list-group-item-action active">CPU Info</a> {{range $key, $val := .hostinfocpu}}
+        <a class="list-group-item list-group-item-action">{{$val}}</a> {{end}}
+        <a href="" class="list-group-item list-group-item-action active">Memory Info: </a>
+        <a class="list-group-item list-group-item-action">Total Memory: {{ .hostinfoMemory.TotalMemory }} KB</a>
+        <a class="list-group-item list-group-item-action">Used Memory: {{ .hostinfoMemory.UsedMemory }} KB</a>
+        <a class="list-group-item list-group-item-action">Memory Usage: {{ .hostinfoMemory.MemoryPercentage }} </a>
+        <a class="list-group-item list-group-item-action">Swap On or Off: {{ .hostinfoMemory.SWAPonoff }}</a>
+        <a href="" class="list-group-item list-group-item-action active">Disk Info</a>
+        <a class="list-group-item list-group-item-action">Total Disk: {{ .hostinfoDisk.TotalDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Used Disk: {{ .hostinfoDisk.UsedDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Availble Disk: {{ .hostinfoDisk.AvaileDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Used Disk Percentage: {{ .hostinfoDisk.DiskPercentage }}</a>
+    </div>
+</div>
+
+
+</html>

@@ -6,30 +6,30 @@
     <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.css">
     <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <title>Service List</title>
+    <title>step List</title>
 </head>
 <div>
         <form method="POST" action="/step" target="iframe">
             <table border="1">
                 <thead>
                     <tr>
-                        <th>Step</th>
+                        <th><input style="width: 98%;" type="text" name="step_name" placeholder="Input step Name" /></th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="service_tbody">
-                    <tr id="service_row1">
-                        <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
-                        <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
+                <tbody id="step_tbody">
+                    <tr id="step_row1">
+                        <td><input style="width: 98%;" type="text" name="step_name" placeholder="Input step Name" /></td>
+                        <td><input style="width: 98%;" name="step_version" type="text" placeholder="Input step Version" /></td>
                     </tr>
-                    <tr id="service_row2">
-                        <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
-                        <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
+                    <tr id="step_row2">
+                        <td><input style="width: 98%;" type="text" name="step_name" placeholder="Input step Name" /></td>
+                        <td><input style="width: 98%;" name="step_version" type="text" placeholder="Input step Version" /></td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td><input type="button" id="addservice" value="Add Service" /></td>
+                        <td><input type="button" id="addstep" value="Add step" /></td>
                         <td><input type="submit" name="exportall" value="Export All" /></td>
                     </tr>
                     <tr>
@@ -41,9 +41,9 @@
         </form>
         <iframe id="iframe" name="iframe" style="display:none;"></iframe>
         <script>
-            $("#addservice").click(function() {
-                var new_tr = $("#service_row2").html();
-                $("#service_tbody").append("<tr>" + new_tr + "</tr>");
+            $("#addstep").click(function() {
+                var new_tr = $("#step_row2").html();
+                $("#step_tbody").append("<tr>" + new_tr + "</tr>");
             })
         </script>
     </div>

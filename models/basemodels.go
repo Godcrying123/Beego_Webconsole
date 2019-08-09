@@ -6,44 +6,10 @@ import (
 	_ "github.com/astaxie/beego"
 )
 
-type Machine struct {
-	ID         int64
-	CPU        string
-	CPUCores   int
-	Memory     int64
-	DiskSpace  int64
-	SWAPStatus string
-	FireFall   string
-}
-
-type Service struct {
-	ID             int64  `form:"-"`
-	ServiceName    string `form:"service_name"`
-	ServiceVersion string `form:"service_version"`
-	ActiveStatus   bool
-	RunningStatus  bool
-}
-
-type UnitServices struct {
-	Service                Service
-	StatusCommand          string
-	LogPath                string
-	LastStatusModifiedTime time.Time
-	LastFiledModifiedTime  time.Time
-}
-
-type Steps struct {
-	ID              int64
-	StepSummary     string
-	StepDescription string
-	StepResult      string
-}
-
-type Message struct {
-	ID              int64
-	MessageOwner    string
-	MessageContent  string
-	MessageSentTime time.Time
+type Command struct {
+	ID             int64
+	Command        string
+	CommandResults string
 }
 
 type Files struct {
@@ -53,6 +19,12 @@ type Files struct {
 	FileLastModified time.Time
 	FileOwnerShip    string
 	FileContent      string
+	FilePath         string
 }
 
-func init() {}
+type Message struct {
+	ID              int64
+	MessageOwner    string
+	MessageContent  string
+	MessageSentTime time.Time
+}
