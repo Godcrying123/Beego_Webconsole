@@ -10,55 +10,28 @@
 </head>
 <div class="container">
     <div id="accordion" style="width: 30%;">
+    {{range $key, $val := .stepsData}}
         <div class="card ">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Step 1</button>
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{$key}}</button>
                 </h5>
             </div>
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                 <div>
-                    <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                    <a href="#" class="list-group-item list-group-item-action">{{$val}}</a>
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Step 2</button>
-                </h5>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div>
-                    <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingThree">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Step 3</button>
-                </h5>
-            </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                <div>
-                    <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                </div>
-            </div>
-        </div>
-        <form action="/step" method="POST">
+    {{end}}
+        <form action="/step" method="POST" enctype="multipart/form-data" target="iframestepupload">
             <div>
                 <input type="button" value="Edit These Steps" />
                 <input type="file" name="importfilestep" value="Import step file" />
                 <input type="submit" name="importallsteps" value="Import New Steps" />
             </div>
         </form>
+        <iframe id="iframestepupload" name="iframestepupload" style="display:none;"></iframe>
     </div>
 </div>
 

@@ -1,11 +1,15 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"strings"
 	"webconsole_sma/models"
 
 	"github.com/astaxie/beego"
+	"github.com/bitly/go-simplejson"
+	"github.com/mitchellh/mapstructure"
 )
 
 func init() {
@@ -74,6 +78,26 @@ func StepJsonGenerator(mapstepsmap map[string]models.MainSteps) (message string,
 }
 
 func StepJsonRead(filePath string) (jsonStruct map[string]models.MainSteps, err error) {
-
-	return
+	var byter bytes.Buffer
+	jsonFile, err := ioutil.ReadFile(filePath)
+	jsonStruct1 := make(map[string]models.MainSteps)
+	if err != nil {
+		beego.Error(err)
+		return nil, err
+	}
+	byter.Write([]byte("["))
+	byter.Write(jsonFile)
+	byter.Write([]byte("]"))
+	jsons, _ := simplejson.NewJson(byter.Bytes())
+	// beego.Info(jsons)
+	for _, jsonmap := range jsons.MustArray() {
+		step := models.MainSteps{}
+		err = mapstructure.WeakDecode(jsonmap.(map[string]interface{}), &step)
+		if err != nil {
+			beego.Error(err)
+		}
+		jsonStruct1[step.StepTitle] = step
+	}
+	beego.Info(jsonStruct1)
+	return jsonStruct1, nil
 }

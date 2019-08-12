@@ -56,6 +56,7 @@ func ServicesJsonRead(filePath string) (jsonStruct map[string]models.Service, er
 	jsonStruct1 := make(map[string]models.Service)
 	if err != nil {
 		beego.Error(err)
+		return nil, err
 	}
 	byter.Write([]byte("["))
 	byter.Write(jsonFile)
@@ -69,7 +70,7 @@ func ServicesJsonRead(filePath string) (jsonStruct map[string]models.Service, er
 		}
 		jsonStruct1[service.ServiceName] = service
 	}
-	return jsonStruct1, err
+	return jsonStruct1, nil
 }
 
 func ServiceList() ([]string, error) {

@@ -8,10 +8,13 @@ import (
 	"path"
 	"syscall"
 	"time"
+	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
 )
+
+var stepJsonStruct map[string]models.MainSteps
 
 type StepController struct {
 	beego.Controller
@@ -19,6 +22,12 @@ type StepController struct {
 
 func (this *StepController) Get() {
 	this.TplName = "step_upload.html"
+	var stepTitle []string
+	for key, _ := range stepJsonStruct {
+		stepTitle = append(stepTitle, key)
+	}
+	this.Data["steps"] = stepTitle
+	this.Data["stepsData"] = stepJsonStruct
 }
 
 func (this *StepController) Post() {
@@ -27,7 +36,10 @@ func (this *StepController) Post() {
 }
 
 func (this *StepController) Import() {
-	File, FileReader, _ := this.GetFile("importfilestep")
+	File, FileReader, err := this.GetFile("importfilestep")
+	if err != nil {
+		beego.Error(err)
+	}
 	ext := path.Ext(FileReader.Filename)
 	// check the fileformat
 	var AllowExtMap map[string]bool = map[string]bool{
@@ -40,7 +52,7 @@ func (this *StepController) Import() {
 	// Create Directory
 	uploadDir := "static/upload/" + time.Now().Format("2006-01-02")
 	oldMask := syscall.Umask(0)
-	err := os.MkdirAll(uploadDir, os.ModePerm)
+	err = os.MkdirAll(uploadDir, os.ModePerm)
 	if err != nil {
 		beego.Error(err)
 	}
@@ -57,7 +69,7 @@ func (this *StepController) Import() {
 		beego.Error(err)
 	}
 	//beego.Info("Upload Successfully")
-	jsonStruct, err = utils.ServicesJsonRead(filePath)
+	stepJsonStruct, err = utils.StepJsonRead(filePath)
 	//beego.Info(jsonStruct)
 	this.Data["services"] = jsonStruct
 	if err != nil {
