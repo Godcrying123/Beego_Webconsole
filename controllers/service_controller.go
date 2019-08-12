@@ -41,14 +41,14 @@ func (this *ServiceController) Post() {
 
 func (this *ServiceController) Export() {
 	var services = make(map[string]models.Service)
-	services_name := this.GetStrings("service_name")
-	services_versions := this.GetStrings("service_version")
-	for index := 0; index < len(services_name); index++ {
-		var service_struct = models.Service{
-			ServiceName:    services_name[index],
-			ServiceVersion: services_versions[index],
+	servicesname := this.GetStrings("service_name")
+	servicesversions := this.GetStrings("service_version")
+	for index := 0; index < len(servicesname); index++ {
+		var servicestruct = models.Service{
+			ServiceName:    servicesname[index],
+			ServiceVersion: servicesversions[index],
 		}
-		services[services_name[index]] = service_struct
+		services[servicesname[index]] = servicestruct
 	}
 	message, err := utils.ServicesJsonGenerator(services)
 	if err != nil {

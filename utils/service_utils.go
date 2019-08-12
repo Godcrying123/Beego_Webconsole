@@ -42,7 +42,6 @@ func ServicesJsonGenerator(services map[string]models.Service) (message string, 
 			builder.Write(output)
 			builder.WriteString(",\n")
 		}
-
 	}
 	err = WriteJson(builder, "json/requirements_services.json")
 	if missrecord != 0 {
