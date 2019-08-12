@@ -5,10 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strconv"
 	"strings"
-	"syscall"
 	"webconsole_sma/models"
 
 	"github.com/astaxie/beego"
@@ -46,15 +44,7 @@ func ServicesJsonGenerator(services map[string]models.Service) (message string, 
 		}
 
 	}
-	jsonOutPutDate := strings.TrimRight(builder.String(), ",\n")
-	os.Stdout.Write([]byte(jsonOutPutDate))
-	oldMask := syscall.Umask(0)
-	filepath := "json/requirements_services.json"
-	err = ioutil.WriteFile(filepath, []byte(jsonOutPutDate), os.ModeAppend)
-	if err != nil {
-		beego.Error(err)
-	}
-	syscall.Umask(oldMask)
+	err = WriteJson(builder, "json/requirements_services.json")
 	if missrecord != 0 {
 		return strconv.Itoa(missrecord) + " records cannot be exported, please check if there are an empty line in the list", nil
 	}

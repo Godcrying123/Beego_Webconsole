@@ -21,13 +21,13 @@ type ServiceController struct {
 }
 
 func (this *ServiceController) Get() {
-	this.TplName = "service_upload.html"
-	beego.Info(jsonStruct)
+	this.TplName = "service.html"
+	//beego.Info(jsonStruct)
 	this.Data["services"] = jsonStruct
 }
 
 func (this *ServiceController) Post() {
-	this.TplName = "service_upload.html"
+	this.TplName = "service.html"
 	btn_import := this.Input().Get("importall")
 	btn_export := this.Input().Get("exportall")
 	//beego.Info(btn_export)
@@ -87,9 +87,9 @@ func (this *ServiceController) Import() {
 	if err != nil {
 		beego.Error(err)
 	}
-	beego.Info("Upload Successfully")
+	//beego.Info("Upload Successfully")
 	jsonStruct, err = utils.ServicesJsonRead(filePath)
-	beego.Info(jsonStruct)
+	//beego.Info(jsonStruct)
 	this.Data["services"] = jsonStruct
 	if err != nil {
 		beego.Error(err)

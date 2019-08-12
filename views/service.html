@@ -3,12 +3,15 @@
 
 <head>
     <meta charset="utf-8">
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <META HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
     <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <title>Service List</title>
 </head>
 <div>
-    <form method="POST" action="/service" target="iframe">
+    <form method="POST" action="service" target="iframeservice">
         <table border="1">
             <thead>
                 <tr>
@@ -38,7 +41,7 @@
             </tfoot>
         </table>
     </form>
-    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+    <iframe id="iframeservice" name="iframeservice" style="display:none;"></iframe>
     <script>
         $("#addservice").click(function() {
             //var $targetTbody = $("#service_tbody");

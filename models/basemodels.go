@@ -10,6 +10,7 @@ type Command struct {
 	ID             int64
 	Command        string
 	CommandResults string
+	ExcutedTime    time.Time
 }
 
 type Files struct {

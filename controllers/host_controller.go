@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"strconv"
 	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
@@ -21,7 +20,7 @@ func (this *HostController) Get() {
 		return
 	}
 	this.Data["CPUutilizations"] = hostinfo.CPU.CPUPercentage
-	this.Data["hostinfocpu"] = []string{hostinfo.CPU.CPUModelandFrequency, strconv.Itoa(hostinfo.CPU.CPUCores)}
+	this.Data["hostinfocpu"] = hostinfo.CPU
 	this.Data["hostinfoMemory"] = hostinfo.Memory
 	this.Data["hostinfoDisk"] = hostinfo.DiskSpace
 	this.Data["hostname"] = hostinfo.HostName
