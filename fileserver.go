@@ -31,7 +31,7 @@ func min(x int64, y int64) int64 {
 	return y
 }
 
-func main1() {
+func main2() {
 	// Get current working directory to get the file from it
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -78,7 +78,6 @@ func handleDirectory(f *os.File, w http.ResponseWriter, req *http.Request) {
 	// First, check if there is any index in this folder.
 	for _, val := range names {
 		if val.Name() == "index.html" {
-			fmt.Println("I am here")
 			serveFile(path.Join(f.Name(), "index.html"), w, req)
 			return
 		}
@@ -237,6 +236,9 @@ func handleFile(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Server", serverUA)
 
 	filepath := path.Join((*root_folder), path.Clean(req.URL.Path))
+	fmt.Println(*root_folder)
+	fmt.Println(path.Clean(req.URL.Path))
+	fmt.Println(filepath)
 	serveFile(filepath, w, req)
 
 	fmt.Printf("\"%s %s %s\" \"%s\" \"%s\"\n",
