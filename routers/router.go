@@ -12,4 +12,5 @@ func init() {
 	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/host", &controllers.HostController{})
 	beego.Router("/step", &controllers.StepController{})
+	beego.Router("/file", &controllers.FileController{})
 }
