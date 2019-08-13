@@ -22,6 +22,7 @@ func (this *FileController) Get() {
 	this.TplName = "file.html"
 	beego.Info(this.Ctx.Request.RequestURI)
 	this.FileList("/")
+	this.Data["baseUrl"] = "/file/"
 }
 
 func (this *FileController) FileList(path string) error {
