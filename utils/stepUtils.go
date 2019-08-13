@@ -16,11 +16,11 @@ func init() {
 
 }
 
-func StepAnalyzer(mainsteplist, stepname, stepsummary, stepcommand []string) map[string]models.MainSteps {
+func StepAnalyzer(mainsteplist, stepname, stepsummary, stepcommand []string) []models.MainSteps {
 	var mainsteps models.MainSteps
 	var substep models.SubSteps
 	var substepslist = []models.SubSteps{}
-	var mainstepmap = make(map[string]models.MainSteps)
+	var mainstepslice = []models.MainSteps{}
 	mainstepindex := 0
 	listlength := len(mainsteplist)
 	previousmainsteptitle := mainsteplist[0]
@@ -34,7 +34,7 @@ func StepAnalyzer(mainsteplist, stepname, stepsummary, stepcommand []string) map
 			mainsteps.SubSteps = substepslist
 			mainsteps.ID = mainstepindex
 			mainstepindex++
-			mainstepmap[previousmainsteptitle] = mainsteps
+			mainstepslice = append(mainstepslice, mainsteps)
 			substepslist = []models.SubSteps{}
 			previousmainsteptitle = mainsteplist[index]
 			substep = substepdefinition(stepname[index], stepsummary[index], stepcommand[index], index)
@@ -44,27 +44,28 @@ func StepAnalyzer(mainsteplist, stepname, stepsummary, stepcommand []string) map
 	if mainsteps.StepTitle == mainsteplist[listlength-1] {
 		mainsteps.SubSteps = substepslist
 		mainsteps.ID = mainstepindex
-		mainstepmap[previousmainsteptitle] = mainsteps
+		mainstepslice = append(mainstepslice, mainsteps)
 	} else {
 		mainsteps.StepTitle = mainsteplist[listlength-1]
 		mainsteps.SubSteps = substepslist
 		mainsteps.ID = mainstepindex
-		mainstepmap[previousmainsteptitle] = mainsteps
+		mainstepslice = append(mainstepslice, mainsteps)
 	}
-	return mainstepmap
+	return mainstepslice
 }
 
 func substepdefinition(stepname, stepsummary, stepcommand string, index int) (substepreturn models.SubSteps) {
-	substepreturn.StepID = index
-	substepreturn.StepName = stepname
-	substepreturn.StepSummary = stepsummary
-	substepreturn.StepCommand = stepcommand
+	substepreturn = models.SubSteps{
+		StepID:      index,
+		StepName:    stepname,
+		StepSummary: stepsummary,
+		StepCommand: stepcommand}
 	return substepreturn
 }
 
-func StepJsonGenerator(mapstepsmap map[string]models.MainSteps) (message string, err error) {
+func StepJsonGenerator(mapstepslice []models.MainSteps) (message string, err error) {
 	var builder strings.Builder
-	for _, stepentity := range mapstepsmap {
+	for _, stepentity := range mapstepslice {
 		output, err := json.MarshalIndent(stepentity, "", "\t")
 		if err != nil {
 			beego.Error(err)
@@ -77,10 +78,10 @@ func StepJsonGenerator(mapstepsmap map[string]models.MainSteps) (message string,
 	return "all steps have been exported to JSON successfully!", nil
 }
 
-func StepJsonRead(filePath string) (jsonStruct map[string]models.MainSteps, err error) {
+func StepJsonRead(filePath string) (jsonSlices []models.MainSteps, err error) {
 	var byter bytes.Buffer
 	jsonFile, err := ioutil.ReadFile(filePath)
-	jsonStruct1 := make(map[string]models.MainSteps)
+	jsonStruct1 := []models.MainSteps{}
 	if err != nil {
 		beego.Error(err)
 		return nil, err
@@ -96,8 +97,7 @@ func StepJsonRead(filePath string) (jsonStruct map[string]models.MainSteps, err 
 		if err != nil {
 			beego.Error(err)
 		}
-		jsonStruct1[step.StepTitle] = step
+		jsonStruct1 = append(jsonStruct1, step)
 	}
-	beego.Info(jsonStruct1)
 	return jsonStruct1, nil
 }

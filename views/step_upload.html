@@ -10,28 +10,30 @@
 </head>
 <div class="container">
     <div id="accordion" style="width: 30%;">
-    {{range $key, $val := .stepsData}}
+        {{range .stepsData}}
         <div class="card ">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{$key}}</button>
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{.StepTitle}}</button>
                 </h5>
             </div>
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                 <div>
-                    <a href="#" class="list-group-item list-group-item-action">{{$val}}</a>
+                    {{range .SubSteps}}
+                    <a href="#" class="list-group-item list-group-item-action">{{.StepName}}</a>
+                    <input type="hidden" name="" value="{{.StepSummary}}">
+                    <input type="hidden" name="" value="{{.StepCommand}}"> {{end}}
                 </div>
             </div>
         </div>
-    {{end}}
-        <form action="/step" method="POST" enctype="multipart/form-data" target="iframestepupload">
+        {{end}}
+        <form action="/step" method="POST" enctype="multipart/form-data">
             <div>
                 <input type="button" value="Edit These Steps" />
                 <input type="file" name="importfilestep" value="Import step file" />
                 <input type="submit" name="importallsteps" value="Import New Steps" />
             </div>
         </form>
-        <iframe id="iframestepupload" name="iframestepupload" style="display:none;"></iframe>
     </div>
 </div>
 
