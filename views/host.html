@@ -11,21 +11,35 @@
 <div style="width:25%">
     <div class="list-group">
         <a href="" class="list-group-item list-group-item-action active">Machine Info</a>
-        <a class="list-group-item list-group-item-action">Hostname: {{ .hostname }}</a>
-        <a class="list-group-item list-group-item-action">OS: {{ .os }}</a>
+        <a class="list-group-item list-group-item-action">Hostname: {{ .hostinfo.HostName }}</a>
+        <a class="list-group-item list-group-item-action">OS: {{ .hostinfo.OS }}</a>
         <a href="" class="list-group-item list-group-item-action active">CPU Info</a>
-        <a class="list-group-item list-group-item-action">CPU Model: {{ .hostinfocpu.CPUModelandFrequency }}</a>
-        <a class="list-group-item list-group-item-action">CPU Cores: {{ .hostinfocpu.CPUCores }}</a>
+        <a class="list-group-item list-group-item-action">CPU Model: {{ .hostinfo.CPU.CPUModelandFrequency }}</a>
+        <div id="accordion">
+            <div class="card ">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">CPU Cores Number: {{ .hostinfo.CPU.CPUCores }} & Core Utilizations</button>
+                    </h5>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div>
+                        {{range $key, $val := .hostinfo.CPU.CPUPercentage}}
+                        <a href="#" class="list-group-item list-group-item-action">CPU {{$key}}: {{$val}} %</a> {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
         <a href="" class="list-group-item list-group-item-action active">Memory Info: </a>
-        <a class="list-group-item list-group-item-action">Total Memory: {{ .hostinfoMemory.TotalMemory }} KB</a>
-        <a class="list-group-item list-group-item-action">Used Memory: {{ .hostinfoMemory.UsedMemory }} KB</a>
-        <a class="list-group-item list-group-item-action">Memory Usage: {{ .hostinfoMemory.MemoryPercentage }} </a>
-        <a class="list-group-item list-group-item-action">Swap On or Off: {{ .hostinfoMemory.SWAPonoff }}</a>
+        <a class="list-group-item list-group-item-action">Total Memory: {{ .hostinfo.Memory.TotalMemory }} KB</a>
+        <a class="list-group-item list-group-item-action">Used Memory: {{ .hostinfo.Memory.UsedMemory }} KB</a>
+        <a class="list-group-item list-group-item-action">Memory Usage: {{ .hostinfo.Memory.MemoryPercentage }} </a>
+        <a class="list-group-item list-group-item-action">Swap On or Off: {{ .hostinfo.Memory.SWAPonoff }}</a>
         <a href="" class="list-group-item list-group-item-action active">Disk Info</a>
-        <a class="list-group-item list-group-item-action">Total Disk: {{ .hostinfoDisk.TotalDisk }} B</a>
-        <a class="list-group-item list-group-item-action">Used Disk: {{ .hostinfoDisk.UsedDisk }} B</a>
-        <a class="list-group-item list-group-item-action">Availble Disk: {{ .hostinfoDisk.AvaileDisk }} B</a>
-        <a class="list-group-item list-group-item-action">Used Disk Percentage: {{ .hostinfoDisk.DiskPercentage }} %</a>
+        <a class="list-group-item list-group-item-action">Total Disk: {{ .hostinfo.DiskSpace.TotalDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Used Disk: {{ .hostinfo.DiskSpace.UsedDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Availble Disk: {{ .hostinfo.DiskSpace.AvaileDisk }} B</a>
+        <a class="list-group-item list-group-item-action">Used Disk Percentage: {{ .hostinfo.DiskSpace.DiskPercentage }} %</a>
     </div>
 </div>
 

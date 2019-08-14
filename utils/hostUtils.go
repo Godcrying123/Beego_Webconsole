@@ -24,7 +24,7 @@ func beegoerr(err error) {
 	}
 }
 
-func HostInfoRead(hostinput models.Machine) (hostoutput models.Machine, err error) {
+func HostInfoRead() (hostoutput models.Machine, err error) {
 	var builder strings.Builder
 	vmStat, err := mem.VirtualMemory()
 	beegoerr(err)

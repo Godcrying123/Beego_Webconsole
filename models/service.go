@@ -13,7 +13,7 @@ type Service struct {
 type UnitServices struct {
 	Service                Service
 	StatusCommand          []Command
-	File                   []Files
+	File                   []File
 	LastStatusModifiedTime time.Time
 	LastFiledModifiedTime  time.Time
 }

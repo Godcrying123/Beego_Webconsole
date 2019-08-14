@@ -9,8 +9,10 @@ import (
 
 func init() {
 	beego.Router("/index", &controllers.IndexController{})
-	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/host", &controllers.HostController{})
+	beego.AutoRouter(&controllers.StepController{})
 	beego.Router("/step", &controllers.StepController{})
+	beego.AutoRouter(&controllers.ServiceController{})
+	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/file/*", &controllers.FileController{})
 }

@@ -1,28 +1,49 @@
 package controllers
 
 import (
-	"container/list"
 	"os"
 	"path"
+	"strings"
 	"webconsole_sma/models"
 
 	"github.com/astaxie/beego"
 )
 
 var root_folder string
+var navurlstring string
+var urlstring string
+var navurl []string
+var navurls []string
 
 const fs_maxbufsize = 4096
 
 //The Init Definition for main controller
 type FileController struct {
-	BaseController
+	beego.Controller
 }
 
 func (this *FileController) Get() {
-	this.TplName = "file.html"
-	beego.Info(this.Ctx.Request.RequestURI)
+	this.TplName = "fileTable.html"
+	urlstring = this.Ctx.Request.RequestURI
 	this.FileList("/")
-	this.Data["baseUrl"] = "/file/"
+	navurl = strings.Split(urlstring, "/")
+	navurlnospace := []string{}
+	navurls = make([]string, len(navurl)+1)
+	navurls[0] = "/"
+	for urlindex := 0; urlindex < len(navurl); urlindex++ {
+		if strings.TrimSpace(navurl[urlindex]) != "" {
+			navurlnospace = append(navurlnospace, navurl[urlindex])
+		} else {
+			continue
+		}
+	}
+	for urlindex := 0; urlindex < len(navurlnospace); urlindex++ {
+		urltmp := navurls[urlindex] + navurlnospace[urlindex] + "/"
+		navurls[urlindex+1] = urltmp
+	}
+
+	beego.Info(navurls)
+	this.Data["navUrl"] = navurls
 }
 
 func (this *FileController) FileList(path string) error {
@@ -42,7 +63,6 @@ func (this *FileController) FileList(path string) error {
 }
 
 func (this *FileController) handleFile() (err error) {
-	urlstring := this.Ctx.Request.RequestURI
 	filepath := path.Join((root_folder), urlstring[5:])
 	beego.Info(filepath)
 	err = this.serveFile(filepath)
@@ -75,20 +95,7 @@ func (this *FileController) serveFile(filepath string) (err error) {
 	return nil
 }
 
-func copyToArray(src *list.List) []string {
-	dst := make([]string, src.Len())
-
-	i := 0
-	for e := src.Front(); e != nil; e = e.Next() {
-		dst[i] = e.Value.(string)
-		i = i + 1
-	}
-
-	return dst
-}
-
 func (this *FileController) handleDirectory(file *os.File) {
-	urlstring := this.Ctx.Request.RequestURI
 	names, _ := file.Readdir(-1)
 	for _, val := range names {
 		if val.Name() == "index.html" {
@@ -98,31 +105,39 @@ func (this *FileController) handleDirectory(file *os.File) {
 	}
 
 	// Otherwise, generate folder content.
-	children_dir_tmp := list.New()
-	children_files_tmp := list.New()
+	var childrenDirTmp models.Directory
+	var childrenDirs []models.Directory
+	var childrenFilesTmp models.File
+	var childrenFiles []models.File
 
 	for _, val := range names {
 		if val.Name()[0] == '.' {
 			continue
 		}
 		if val.IsDir() {
-			children_dir_tmp.PushBack(val.Name())
+			childrenDirTmp.DirName = val.Name()
+			childrenDirTmp.DirSize = val.Size()
+			childrenDirTmp.DirLastModified = val.ModTime()
+			childrenDirTmp.DirAccess = val.Mode()
+			childrenDirTmp.DirPath = urlstring[5:]
+			childrenDirs = append(childrenDirs, childrenDirTmp)
 		} else {
-			children_files_tmp.PushBack(val.Name())
+			childrenFilesTmp.FileName = val.Name()
+			childrenFilesTmp.FileSize = val.Size()
+			childrenFilesTmp.FileLastModified = val.ModTime()
+			childrenFilesTmp.FileAccess = val.Mode()
+			childrenFilesTmp.FilePath = urlstring[5:]
+			childrenFiles = append(childrenFiles, childrenFilesTmp)
 		}
 	}
 
-	// And transfer the content to the final array structure
-	children_dir := copyToArray(children_dir_tmp)
-	children_files := copyToArray(children_files_tmp)
-
-	fileData := models.DirListing{
-		Name:           urlstring[5:],
-		Children_dir:   children_dir,
-		Children_files: children_files,
+	// beego.Info(childrenDirs)
+	// beego.Info(childrenFiles)
+	fileData := models.DirListing1{
+		Name:          urlstring[5:],
+		ChildrenDirs:  childrenDirs,
+		ChildrenFiles: childrenFiles,
 	}
 
 	this.Data["fileData"] = fileData
-
-	beego.Info(fileData)
 }

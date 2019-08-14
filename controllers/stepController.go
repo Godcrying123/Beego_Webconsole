@@ -23,6 +23,10 @@ func (this *StepController) Post() {
 	this.Import()
 }
 
+func (this *StepController) Edit() {
+	this.TplName = "step.html"
+}
+
 func (this *StepController) Import() {
 	filePath, err := this.FileUploadAndSave("importfilestep", ".json")
 	if err != nil {

@@ -1,19 +1,36 @@
 package models
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
-type Files struct {
-	ID               int64
+type File struct {
 	FileName         string
 	FileType         string
-	FileLastModified time.Time
-	FileOwnerShip    string
+	FileAccess       os.FileMode
 	FileContent      string
 	FilePath         string
+	FileSize         int64
+	FileLastModified time.Time
+}
+
+type Directory struct {
+	DirName         string
+	DirAccess       os.FileMode
+	DirSize         int64
+	DirPath         string
+	DirLastModified time.Time
 }
 
 type DirListing struct {
 	Name           string
 	Children_dir   []string
 	Children_files []string
+}
+
+type DirListing1 struct {
+	Name          string
+	ChildrenDirs  []Directory
+	ChildrenFiles []File
 }
