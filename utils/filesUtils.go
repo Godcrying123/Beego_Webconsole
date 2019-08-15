@@ -22,3 +22,8 @@ func WriteJson(builder strings.Builder, filepath string) error {
 	syscall.Umask(oldMask)
 	return err
 }
+
+func FileRead(filename string) error {
+
+	return nil
+}

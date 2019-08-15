@@ -15,4 +15,5 @@ func init() {
 	beego.AutoRouter(&controllers.ServiceController{})
 	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/file/*", &controllers.FileController{})
+	// beego.AutoRouter(&controllers.FileController{})
 }

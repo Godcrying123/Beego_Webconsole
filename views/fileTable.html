@@ -14,16 +14,14 @@
     <div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                {{range .navUrl}}
-                <li class="breadcrumb-item"><a href="{{.}}">{{.}}</a></li>
+                {{range $key, $val := .navUrl}}
+                <li class="breadcrumb-item"><a href="/file/{{$val}}">{{$key}}</a></li>
                 {{end}}
-
-
             </ol>
         </nav>
     </div>
     <div>
-        <form action="" method="post" class="form-inline" style=" margin-left: auto; margin-top: auto;">
+        <form action="" method="post" class="form-inline" style="vertical-align:top">
             <table class="table table-sm" style="width: 50%;">
                 <thead>
                     <tr>
@@ -44,14 +42,14 @@
                     {{end}} {{range .fileData.ChildrenFiles}}
                     <tr>
                         <td>{{.FileAccess}}</td>
-                        <td><a href="/file{{.FilePath}}/{{.FileName}}">{{.FileName}}</a></td>
+                        <td><a href="/file{{.FilePath}}?editfile={{.FileName}}">{{.FileName}}</a></td>
                         <td>{{.FileSize}}</td>
                         <td>{{.FileLastModified}}</td>
                     </tr>
                     {{end}}
                 </tbody>
             </table>
-            <textarea style="width: 50%; vertical-align: top;" class="form-control" id="validationTextarea" rows="25" style="OVERFLOW: hidden" placeholder="Required example textarea" required></textarea>
+            <textarea style="width: 50%; vertical-align: top;" class="form-control" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea" required></textarea>
         </form>
     </div>
 </body>

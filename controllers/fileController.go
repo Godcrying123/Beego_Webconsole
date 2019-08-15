@@ -5,6 +5,7 @@ import (
 	"path"
 	"strings"
 	"webconsole_sma/models"
+	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
 )
@@ -13,7 +14,7 @@ var root_folder string
 var navurlstring string
 var urlstring string
 var navurl []string
-var navurls []string
+var navurlsmap map[string]string
 
 const fs_maxbufsize = 4096
 
@@ -24,26 +25,29 @@ type FileController struct {
 
 func (this *FileController) Get() {
 	this.TplName = "fileTable.html"
+	filename := this.Input().Get("editfile")
+	navurlsmap = make(map[string]string)
+	navurlsmap["/"] = "/"
+	urltmp := ""
 	urlstring = this.Ctx.Request.RequestURI
-	this.FileList("/")
-	navurl = strings.Split(urlstring, "/")
-	navurlnospace := []string{}
-	navurls = make([]string, len(navurl)+1)
-	navurls[0] = "/"
-	for urlindex := 0; urlindex < len(navurl); urlindex++ {
-		if strings.TrimSpace(navurl[urlindex]) != "" {
-			navurlnospace = append(navurlnospace, navurl[urlindex])
-		} else {
-			continue
+	if filename != "" {
+		navurltmp := strings.Split(urlstring, "?")
+		urlstring = navurltmp[0]
+		navurl = strings.Split(navurltmp[0][5:], "/")
+		fileNameAndPath := navurltmp[0][5:] + filename
+		utils.FileRead(fileNameAndPath)
+		this.FileList("/")
+	} else {
+		this.FileList("/")
+		navurl = strings.Split(urlstring[5:], "/")
+	}
+	func() {
+		for i := 1; i < len(navurl)-1; i++ {
+			urltmp = urltmp + navurl[i] + "/"
+			navurlsmap[navurl[i]] = urltmp
 		}
-	}
-	for urlindex := 0; urlindex < len(navurlnospace); urlindex++ {
-		urltmp := navurls[urlindex] + navurlnospace[urlindex] + "/"
-		navurls[urlindex+1] = urltmp
-	}
-
-	beego.Info(navurls)
-	this.Data["navUrl"] = navurls
+	}()
+	this.Data["navUrl"] = navurlsmap
 }
 
 func (this *FileController) FileList(path string) error {
@@ -64,7 +68,6 @@ func (this *FileController) FileList(path string) error {
 
 func (this *FileController) handleFile() (err error) {
 	filepath := path.Join((root_folder), urlstring[5:])
-	beego.Info(filepath)
 	err = this.serveFile(filepath)
 	if err != nil {
 		beego.Error(err)
