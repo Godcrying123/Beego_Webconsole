@@ -15,6 +15,7 @@ var navurlstring string
 var urlstring string
 var navurl []string
 var navurlsmap map[string]string
+var File models.File
 
 const fs_maxbufsize = 4096
 
@@ -34,8 +35,11 @@ func (this *FileController) Get() {
 		navurltmp := strings.Split(urlstring, "?")
 		urlstring = navurltmp[0]
 		navurl = strings.Split(navurltmp[0][5:], "/")
-		fileNameAndPath := navurltmp[0][5:] + filename
-		utils.FileRead(fileNameAndPath)
+		File, err := utils.FileRead(filename, navurltmp[0][5:])
+		if err != nil {
+			beego.Error(err)
+		}
+		this.Data["File"] = File
 		this.FileList("/")
 	} else {
 		this.FileList("/")
