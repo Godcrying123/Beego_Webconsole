@@ -40,10 +40,12 @@ func (this *FileController) Get() {
 			beego.Error(err)
 		}
 		this.Data["File"] = File
+		this.Data["baseUrl"] = urlstring[5:]
 		this.FileList("/")
 	} else {
 		this.FileList("/")
 		navurl = strings.Split(urlstring[5:], "/")
+		this.Data["baseUrl"] = urlstring[5:]
 	}
 	func() {
 		for i := 1; i < len(navurl)-1; i++ {
@@ -52,6 +54,42 @@ func (this *FileController) Get() {
 		}
 	}()
 	this.Data["navUrl"] = navurlsmap
+}
+
+func (this *FileController) Post() {
+	this.TplName = "fileTable.html"
+	fileContent := this.Input().Get("filecontent")
+	filePath := this.Input().Get("savefilepath")
+	fileName := this.Input().Get("savefilename")
+	beego.Info(fileContent)
+	beego.Info(filePath)
+	beego.Info(fileName)
+	ok, _ := utils.FileExistCheck(filePath + fileName)
+	if ok == false {
+		beego.Info("I am here")
+		beego.Info(ok)
+		File.FileName = fileName
+		File.FilePath = filePath
+		File.FileContent = fileContent
+		err := utils.FileWrite(File)
+		if err != nil {
+			beego.Error(err)
+		}
+	} else {
+		beego.Info("I am here")
+		File, err := utils.FileRead(fileName, filePath)
+		if err != nil {
+			beego.Error(err)
+		}
+		if File.FileContent != fileContent {
+			File.FileContent = fileContent
+		}
+		err = utils.FileWrite(File)
+		if err != nil {
+			beego.Error(err)
+		}
+	}
+	this.Redirect(urlstring, 302)
 }
 
 func (this *FileController) FileList(path string) error {

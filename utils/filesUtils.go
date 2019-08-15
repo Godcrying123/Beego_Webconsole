@@ -52,3 +52,30 @@ func FileRead(filename, filepath string) (File models.File, err error) {
 	File.FileContent = fileString
 	return File, err
 }
+
+func FileWrite(File models.File) (err error) {
+	oldMask := syscall.Umask(0)
+	file, err := os.OpenFile(File.FilePath+File.FileName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 644)
+	syscall.Umask(oldMask)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	defer file.Close()
+	if _, err := file.WriteString(File.FileContent); err != nil {
+		beego.Error(err)
+		return err
+	}
+	return nil
+}
+
+func FileExistCheck(fileNameAndPath string) (Exist bool, err error) {
+	_, err = os.Stat(fileNameAndPath)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}

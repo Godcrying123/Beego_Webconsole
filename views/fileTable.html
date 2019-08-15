@@ -21,7 +21,15 @@
         </nav>
     </div>
     <div>
-        <form action="" method="post" class="form-inline" style="vertical-align:top">
+        <form action="/file" method="post">
+            <textarea style="width: 50%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea" required>{{.File.FileContent}}</textarea>
+            <hr>
+            <label>
+                    Directory: <input type="text" style="width: 100%;" name="savefilepath" placeholder="please input the path you want to save in" value="{{.baseUrl}}">
+                    FileName: <input type="text" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save" value="{{.File.FileName}}">
+            </label>
+            <hr>
+            <input type="submit" name="savefile" value="Save this File">
             <table class="table table-sm" style="width: 50%;">
                 <thead>
                     <tr>
@@ -49,7 +57,6 @@
                     {{end}}
                 </tbody>
             </table>
-            <textarea style="width: 50%; vertical-align: top;" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea" required>{{.File.FileContent}}</textarea>
         </form>
     </div>
 </body>
