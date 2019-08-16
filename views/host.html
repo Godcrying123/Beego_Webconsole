@@ -15,7 +15,7 @@
                         <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">CPU Cores Number: {{ .hostinfo.CPU.CPUCores }} & Core Utilizations</button>
                     </h5>
                 </div>
-                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                     <div>
                         {{range $key, $val := .hostinfo.CPU.CPUPercentage}}
                         <a href="#" class="list-group-item list-group-item-action">CPU {{$key}}: {{$val}} %</a> {{end}}
@@ -34,6 +34,14 @@
         <a class="list-group-item list-group-item-action">Availble Disk: {{ .hostinfo.DiskSpace.AvaileDisk }} B</a>
         <a class="list-group-item list-group-item-action">Used Disk Percentage: {{ .hostinfo.DiskSpace.DiskPercentage }} %</a>
     </div>
+</div>
+<div style="width:25%; text-align: center;">
+    <form method="post" action="/host">
+        <input style="width:40%" type="button" value="Refresh" class="btn btn-primary mb-2" onclick="javascript:window.location.href='/host/';"> {{if .switch}}
+        <input style="width:40%" type="submit" name="syncoff" value="Auto-Sync Off" class="btn btn-primary mb-2"> {{else}}
+        <input style="width:40%" type="submit" name="syncon" value="Auto-Sync On" class="btn btn-primary mb-2"> {{end}}
+
+    </form>
 </div>
 
 
