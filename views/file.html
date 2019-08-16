@@ -1,121 +1,64 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
-    <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.min.css">
-    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        a,
-        a:active {
-            text-decoration: none;
-            color: blue;
-        }
-        
-        a:visited {
-            color: #48468F;
-        }
-        
-        a:hover,
-        a:focus {
-            text-decoration: underline;
-            color: red;
-        }
-        
-        body {
-            background-color: #F5F5F5;
-        }
-        
-        h2 {
-            margin-bottom: 12px;
-        }
-        
-        table {
-            margin-left: 12px;
-        }
-        
-        th,
-        td {
-            font: 90% monospace;
-            text-align: left;
-        }
-        
-        th {
-            font-weight: bold;
-            padding-right: 14px;
-            padding-bottom: 3px;
-        }
-        
-        td {
-            padding-right: 14px;
-        }
-        
-        td.s,
-        th.s {
-            text-align: right;
-        }
-        
-        div.list {
-            background-color: white;
-            border-top: 1px solid #646464;
-            border-bottom: 1px solid #646464;
-            padding-top: 10px;
-            padding-bottom: 14px;
-        }
-        
-        div.foot {
-            font: 90% monospace;
-            color: #787878;
-            padding-top: 4px;
-        }
-    </style>
-    <title>File</title>
+{{template "header" .}}
+<title>File List</title>
 </head>
+{{template "navbar" .}}
 
 <body>
     <div>
-        <input type="text" name="setrootpath" placeholder="Please input your wanted file path">
-        <div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{.baseUrl}}{{.fileData.Name}}">{{.fileData.Name}}</a></li>
-                </ol>
-            </nav>
-        </div>
-        <div class="list">
-            <table summary="Directory Listing" cellpadding="0" cellspacing="0">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                {{range $key, $val := .navUrl}}
+                <li class="breadcrumb-item"><a href="/file/{{$val}}">{{$key}}</a></li>
+                {{end}}
+            </ul>
+        </nav>
+    </div>
+    <div>
+        <div style="width: 49%; float:left;">
+            <table class="table table-sm" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th class="t">Type</th>
-                        <th class="n">Name</th>
-                        <th class="dl">Options</th>
+                        <th>FileType</th>
+                        <th>FileName</th>
+                        <th>FileSize</th>
+                        <th>FileLastModified</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{range .fileData.ChildrenDirs}}
                     <tr>
-                        <td class="n"><a href="../">Parent Directory</a>/</td>
-                        <td class="t">Directory</td>
-                        <td class="dl"></td>
+                        <td>{{.DirAccess}}</td>
+                        <td><a href="/file{{.DirPath}}{{.DirName}}/">{{.DirName}}</a></td>
+                        <td>{{.DirSize}}</td>
+                        <td>{{.DirLastModified}}</td>
                     </tr>
-                    {{range .fileData.Children_dir}}
+                    {{end}} {{range .fileData.ChildrenFiles}}
                     <tr>
-                        <td class="n"><a href="{{.}}/">{{.}}/</a></td>
-                        <td class="t">Directory</td>
-                        <td class="dl"></td>
-                    </tr>
-                    {{end}} {{range .fileData.Children_files}}
-                    <tr>
-                        <td class="n"><a href="{{.}}">{{.}}</a></td>
-                        <td class="t">&nbsp;</td>
-                        <td class="dl"><a href="{{.}}?dl">Download</a></td>
+                        <td>{{.FileAccess}}</td>
+                        <td><a href="/file{{.FilePath}}?editfile={{.FileName}}">{{.FileName}}</a></td>
+                        <td>{{.FileSize}}</td>
+                        <td>{{.FileLastModified}}</td>
                     </tr>
                     {{end}}
                 </tbody>
             </table>
         </div>
+        <form action="/file" method="post">
+            <div class="form-group" style="width: 49%; position:fixed; left:51%;">
+                <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea" required>{{.File.FileContent}}</textarea>
+                <hr>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Directory:</label>
+                    <input type="text" class="form-control" style="width: 100%;" name="savefilepath" placeholder="please input the path you want to save in" value="{{.baseUrl}}">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">FileName:</label>
+                    <input type="text" class="form-control" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save" value="{{.File.FileName}}">
+                </div>
+                <hr>
+                <input type="submit" class="btn btn-primary" name="savefile" value="Save this File">
+            </div>
+        </form>
     </div>
 </body>
 

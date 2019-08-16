@@ -25,7 +25,7 @@ type FileController struct {
 }
 
 func (this *FileController) Get() {
-	this.TplName = "fileTable.html"
+	this.TplName = "file.html"
 	filename := this.Input().Get("editfile")
 	navurlsmap = make(map[string]string)
 	navurlsmap["/"] = "/"
@@ -57,7 +57,7 @@ func (this *FileController) Get() {
 }
 
 func (this *FileController) Post() {
-	this.TplName = "fileTable.html"
+	this.TplName = "file.html"
 	fileContent := this.Input().Get("filecontent")
 	filePath := this.Input().Get("savefilepath")
 	fileName := this.Input().Get("savefilename")

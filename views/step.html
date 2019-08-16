@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.css">
-    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <title>step List</title>
 </head>
 <div>
@@ -27,7 +28,16 @@
                     <th>Step Command</th>
                 </tr>
             </thead>
+            <hr>
             <tbody id="step_tbody">
+                {{if .stepExist}} {{range $key, $val := .stepList}} {{range $val.SubSteps}}
+                <tr id="step_row2" style="vertical-align: top;">
+                    <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" value="{{$val.StepTitle}}" /></td>
+                    <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name">{{.StepName}}</textarea></td>
+                    <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary">{{.StepSummary}}</textarea></td>
+                    <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds">{{.StepCommand}}</textarea></td>
+                </tr>
+                {{end}} {{end}} {{else}}
                 <tr id="step_row1" style="vertical-align: top;">
                     <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" /></td>
                     <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name"></textarea></td>
@@ -40,6 +50,7 @@
                     <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary"></textarea></td>
                     <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds"></textarea></td>
                 </tr>
+                {{end}}
             </tbody>
         </table>
         <input type="button" id="addstep" value="Add Step" />

@@ -29,7 +29,7 @@
         {{end}}
         <form action="/step" method="POST" enctype="multipart/form-data">
             <div>
-                <input type="button" value="Edit These Steps" />
+                <input type="button" value="Edit These Steps" onclick="javascript:window.location.href='/step/edit/';"></input>
                 <input type="file" name="importfilestep" value="Import step file" />
                 <input type="submit" name="importallsteps" value="Import New Steps" />
             </div>

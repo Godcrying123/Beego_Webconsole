@@ -20,11 +20,19 @@ func (this *StepController) Get() {
 
 func (this *StepController) Post() {
 	this.TplName = "step_upload.html"
+	beego.Info("Running")
 	this.Import()
 }
 
 func (this *StepController) Edit() {
 	this.TplName = "step.html"
+	if len(stepJsonStruct) != 0 {
+		this.Data["stepExist"] = true
+		this.Data["stepList"] = stepJsonStruct
+		beego.Info(stepJsonStruct)
+	} else {
+		this.Data["stepExist"] = false
+	}
 }
 
 func (this *StepController) Import() {

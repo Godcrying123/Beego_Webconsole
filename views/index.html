@@ -12,26 +12,7 @@
     <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <title>SMA Web Console</title>
 </head>
-<header>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="/">SMA Web-Console</a>
-            <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services<span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Steps<span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Logs<span class="sr-only">(current)</span></a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</header>
+{{template "navbar" .}}
 
 <body>
     <div id="terminal" class="container" style="margin: auto auto;"></div>

@@ -54,9 +54,9 @@ func FileRead(filename, filepath string) (File models.File, err error) {
 }
 
 func FileWrite(File models.File) (err error) {
-	oldMask := syscall.Umask(0)
-	file, err := os.OpenFile(File.FilePath+File.FileName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 644)
-	syscall.Umask(oldMask)
+	// oldMask := syscall.Umask(0)
+	file, err := os.OpenFile(File.FilePath+File.FileName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 766)
+	// syscall.Umask(oldMask)
 	if err != nil {
 		beego.Error(err)
 		return err
