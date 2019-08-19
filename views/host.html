@@ -1,7 +1,22 @@
 {{template "header" .}}
-<title>Service List</title>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(function() {
+        var ws = new WebSocket('ws://' + window.location.host + '/host/ws')
+        ws.onmessage = function(e) {
+            //$('<li>').text(event.data).appendTo($ul);
+            console.log(JSON.parse(event.data.Memory));
+        };
+        var $ul = $("#msg-list");
+    });
+</script>
+<title>Host List</title>
 </head>
-<div style="width:25%">
+
+<body>
+    <h1>登录后会在此显示ip</h1>
+    <ul id="msg-list"></ul>
+    <!-- <div style="width:25%">
     <div class="list-group">
         <a href="" class="list-group-item list-group-item-action active">Machine Info</a>
         <a class="list-group-item list-group-item-action">Hostname: {{ .hostinfo.HostName }}</a>
@@ -34,15 +49,16 @@
         <a class="list-group-item list-group-item-action">Availble Disk: {{ .hostinfo.DiskSpace.AvaileDisk }} B</a>
         <a class="list-group-item list-group-item-action">Used Disk Percentage: {{ .hostinfo.DiskSpace.DiskPercentage }} %</a>
     </div>
-</div>
-<div style="width:25%; text-align: center;">
-    <form method="post" action="/host">
-        <input style="width:40%" type="button" value="Refresh" class="btn btn-primary mb-2" onclick="javascript:window.location.href='/host/';"> {{if .switch}}
-        <input style="width:40%" type="submit" name="syncoff" value="Auto-Sync Off" class="btn btn-primary mb-2"> {{else}}
-        <input style="width:40%" type="submit" name="syncon" value="Auto-Sync On" class="btn btn-primary mb-2"> {{end}}
+</div> -->
+    <div style="width:25%; text-align: center;">
+        <form method="post" action="/host">
+            <input style="width:40%" type="button" value="Refresh" class="btn btn-primary mb-2" onclick="javascript:window.location.href='/host/';"> {{if .switch}}
+            <input style="width:40%" type="submit" name="syncoff" value="Auto-Sync Off" class="btn btn-primary mb-2"> {{else}}
+            <input style="width:40%" type="submit" name="syncon" value="Auto-Sync On" class="btn btn-primary mb-2"> {{end}}
+        </form>
+    </div>
+</body>
 
-    </form>
-</div>
 
 
 </html>

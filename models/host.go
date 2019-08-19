@@ -1,10 +1,10 @@
 package models
 
 type Machine struct {
-	CPU       CPUDetail
-	Memory    MemoryDetail
-	DiskSpace DiskDetail
-	OS        string
+	CPU       CPUDetail    `json:"CPU"`
+	Memory    MemoryDetail `json:"Memory"`
+	DiskSpace DiskDetail   `json:"DiskSpace"`
+	OS        string       `json:"OS"`
 	HostIp    []string
 	HostName  string
 	User      string
