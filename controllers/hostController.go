@@ -76,4 +76,9 @@ func (this *HostController) Post1() {
 }
 
 func (this *HostController) Post() {
+	this.TplName = "host.html"
+	syncoff := this.Input().Get("syncoff")
+	syncon := this.Input().Get("syncon")
+	beego.Info(syncoff)
+	beego.Info(syncon)
 }
