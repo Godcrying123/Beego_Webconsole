@@ -29,7 +29,7 @@ func (this *StepController) Edit() {
 	if len(stepJsonStruct) != 0 {
 		this.Data["stepExist"] = true
 		this.Data["stepList"] = stepJsonStruct
-		beego.Info(stepJsonStruct)
+		// beego.Info(stepJsonStruct)
 	} else {
 		this.Data["stepExist"] = false
 	}

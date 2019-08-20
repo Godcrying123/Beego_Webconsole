@@ -1,43 +1,62 @@
-<!DOCTYPE html>
-<html>
+{{template "header" .}}
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(function() {
+        var ws = new WebSocket('ws://' + window.location.host + '/service/ws')
+        ws.onmessage = function(event) {
+            // $('<li>').text(event.data).appendTo($ul);
+            var data = JSON.parse(event.data);
+            var active = data.ActiveStatus;
+            var running = data.RunningStatus
+            if (active != "active" || running != "running") {
+                console.log("The Service " + data.ServiceName + " Status is Not Good");
 
-<head>
-    <meta charset="utf-8">
-    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <title>Service List</title>
+            };
+            // console.log(data.ServiceName);
+            // console.log(data.ActiveStatus);
+        };
+        ws.onopen = function() {
+            console.log("WebSocket Data Has Started!")
+        };
+    });
+</script>
+<title>Service List</title>
 </head>
-<div>
-    <form method="POST" action="/service" enctype="multipart/form-data" target="iframe">
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Service Name</th>
-                    <th>Service Version</th>
-                </tr>
-            </thead>
-            <tbody>
+
+<body>
+    <div style="width: 30%;">
+        <form method="POST" action="/service" enctype="multipart/form-data" target="iframe">
+            <table class="table table-responsive table-hover table-striped" style="table-layout:fixed;word-break:break-all;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="3">SerVice List</th>
+                    </tr>
+                </thead>
                 {{range .services}}
-                <tr>
-                    <td>{{.ServiceName}}</td>
-                    <td>{{.ServiceVersion}}</td>
-                </tr>
+                <tbody>
+                    <tr class="clickable" data-toggle="collapse" data-target="#{{.ServiceName}}" aria-expanded="false" aria-controls="{{.ServiceName}}">
+                        <td colspan="3">{{.ServiceName}}.Service</td>
+                    </tr>
+                </tbody>
+                <tbody id="{{.ServiceName}}" class="collapse">
+                    <tr>
+                        <td>{{.ServiceVersion}}</td>
+                        <td>{{.ActiveStatus}}</td>
+                        <td>{{.RunningStatus}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{.ServiceStatus}}</td>
+                    </tr>
+                </tbody>
                 {{end}}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>Last Modified: 2019-06-27 15:04:05</td>
-                </tr>
-            </tfoot>
-        </table>
-        <input type="file" name="importfile" />
-        <input type="submit" name="importall" value="Import All" />
-    </form>
-    <script>
-    </script>
-</div>
-
-
+            </table>
+            <input type="button" value="Edit All" onclick="javascript:window.location.href='/service/upload/';" />
+            <input type="file" name="importfile" />
+            <input type="submit" name="importall" value="Import All" />
+        </form>
+        <script>
+        </script>
+    </div>
+</body>
 
 </html>

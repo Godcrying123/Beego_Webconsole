@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	turnOnOff bool
-	onAndOff  = make(chan bool, 1)
-	Clients   = make(map[*websocket.Conn]bool)
-	Hostchan  = make(chan models.Machine)
+	turnOnOff   bool
+	onAndOff    = make(chan bool, 1)
+	HostClients = make(map[*websocket.Conn]bool)
+	Hostchan    = make(chan models.Machine)
 )
 
 type HostController struct {
@@ -73,12 +73,4 @@ func (this *HostController) Post1() {
 	// 		<-tick
 	// 	}
 	// }
-}
-
-func (this *HostController) Post() {
-	this.TplName = "host.html"
-	syncoff := this.Input().Get("syncoff")
-	syncon := this.Input().Get("syncon")
-	beego.Info(syncoff)
-	beego.Info(syncon)
 }

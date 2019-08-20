@@ -56,7 +56,7 @@ func CommandExecReturnString(command string) (result string, err error) {
 				beego.Error(err)
 				return "", err
 			} else {
-				return builder.String(), nil
+				return strings.Trim(builder.String(), "\n"), nil
 			}
 		}
 		builder.Write(output)

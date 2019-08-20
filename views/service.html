@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
-    <META HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
-    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <title>Service List</title>
+{{template "header" .}}
+<title>Service List</title>
 </head>
 <div>
     <form method="POST" action="service" target="iframeservice">
@@ -20,6 +11,12 @@
                 </tr>
             </thead>
             <tbody id="service_tbody">
+                {{if .serviceExist}} {{range $key, $val := .services}}
+                <tr id="service_row2">
+                    <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" value="{{$key}}" /></td>
+                    <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" value="{{$val.ServiceVersion}}" /></td>
+                </tr>
+                {{end}} {{else}}
                 <tr id="service_row1">
                     <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
                     <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
@@ -28,6 +25,8 @@
                     <td><input style="width: 98%;" type="text" name="service_name" placeholder="Input Service Name" /></td>
                     <td><input style="width: 98%;" name="service_version" type="text" placeholder="Input Service Version" /></td>
                 </tr>
+                {{end}}
+
             </tbody>
             <tfoot>
                 <tr>

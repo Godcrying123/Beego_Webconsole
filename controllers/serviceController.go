@@ -5,26 +5,35 @@ import (
 	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
+	"github.com/gorilla/websocket"
 )
 
-var jsonStruct map[string]models.Service
+var (
+	jsonStruct     = make(map[string]models.Service)
+	ServiceClients = make(map[*websocket.Conn]bool)
+	Servicechan    = make(chan models.Service)
+)
 
 type ServiceController struct {
 	BaseController
 }
 
 func (this *ServiceController) Get() {
-	this.TplName = "service.html"
-	//beego.Info(jsonStruct)
+	this.TplName = "service_upload.html"
 	this.Data["services"] = jsonStruct
 }
 
 func (this *ServiceController) Upload() {
-	this.TplName = "service_upload.html"
+	this.TplName = "service.html"
+	if len(jsonStruct) != 0 {
+		this.Data["serviceExist"] = true
+		this.Data["services"] = jsonStruct
+	} else {
+		this.Data["serviceExist"] = false
+	}
 }
 
 func (this *ServiceController) Post() {
-	this.TplName = "service.html"
 	btn_import := this.Input().Get("importall")
 	btn_export := this.Input().Get("exportall")
 	if btn_export != "" {
@@ -56,12 +65,19 @@ func (this *ServiceController) Import() {
 	filePath, err := this.FileUploadAndSave("importfile", ".json")
 	if err != nil {
 		beego.Error(err)
-		return
 	}
 	jsonStruct, err = utils.ServicesJsonRead(filePath)
-	this.Data["services"] = jsonStruct
+
 	if err != nil {
 		beego.Error(err)
+	}
+	for servicekey, service := range jsonStruct {
+		serviceReturn, err := utils.ServiceInfo(service)
+		if err != nil {
+			beego.Error(err)
+		}
+		jsonStruct[servicekey] = serviceReturn
+
 	}
 	this.Redirect("/service", 302)
 }

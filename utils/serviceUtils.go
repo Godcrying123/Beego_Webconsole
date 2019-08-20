@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -73,17 +72,23 @@ func ServicesJsonRead(filePath string) (jsonStruct map[string]models.Service, er
 	return jsonStruct1, nil
 }
 
-func ServiceList() ([]string, error) {
-	cmdservicelist := "systemctl list-units --all|head -n -7|awk 'NR>1{print $0}'"
-	serviceslist, err := CommandExecReturnSlices(cmdservicelist)
+func ServiceInfo(Service models.Service) (ServiceReturn models.Service, err error) {
+	ServiceReturn = Service
+	activeAndrun, err := ServiceStatus(ServiceReturn.ServiceName)
 	if err != nil {
 		beego.Error(err)
-		return nil, err
 	}
-	for _, serviceitem := range serviceslist {
-		fmt.Println(serviceitem)
+	statusList := strings.Split(activeAndrun, " ")
+	if len(statusList) >= 2 {
+		ServiceReturn.ActiveStatus = strings.Trim(statusList[0], " ")
+		ServiceReturn.RunningStatus = strings.Trim(statusList[1], "\n")
 	}
-	return serviceslist, nil
+	ServiceReturn.ServiceStatus, err = ServiceDetail(ServiceReturn.ServiceName)
+	if err != nil {
+		beego.Error(err)
+		return ServiceReturn, err
+	}
+	return ServiceReturn, nil
 }
 
 func ServiceStatus(servicename string) (string, error) {

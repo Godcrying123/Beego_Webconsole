@@ -13,18 +13,26 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-type WebSocketController struct {
+type HostWebSocketController struct {
 	beego.Controller
 }
 
-func (this *WebSocketController) Get() {
+type StepWebSocketController struct {
+	beego.Controller
+}
+
+type ServiceWebSocketController struct {
+	beego.Controller
+}
+
+func (this *HostWebSocketController) Get() {
 	tick := time.Tick(4 * time.Second)
 	ws, err := upgrader.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil)
 	if err != nil {
 		beego.Error(err)
 	}
 	defer ws.Close()
-	Clients[ws] = true
+	HostClients[ws] = true
 	go handleMessages()
 	for {
 		hostinfo, err := utils.HostInfoRead()
@@ -39,14 +47,48 @@ func (this *WebSocketController) Get() {
 
 func handleMessages() {
 	for {
-		hostinfo := <-Hostchan
-		for client := range Clients {
-			err := client.WriteJSON(hostinfo)
-			if err != nil {
-				beego.Error(err)
-				client.Close()
-				delete(Clients, client)
+		select {
+		case hostinfo := <-Hostchan:
+			for client := range HostClients {
+				err := client.WriteJSON(hostinfo)
+				if err != nil {
+					beego.Error(err)
+					client.Close()
+					delete(HostClients, client)
+				}
+			}
+		case serviceinfo := <-Servicechan:
+			for client := range ServiceClients {
+				err := client.WriteJSON(serviceinfo)
+				if err != nil {
+					beego.Error(err)
+					client.Close()
+					delete(ServiceClients, client)
+				}
 			}
 		}
 	}
+}
+
+func (this *ServiceWebSocketController) Get() {
+	tick := time.Tick(100 * time.Second)
+	ws, err := upgrader.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil)
+	if err != nil {
+		beego.Error(err)
+	}
+	defer ws.Close()
+	ServiceClients[ws] = true
+	go handleMessages()
+	for {
+		for _, serviceEntity := range jsonStruct {
+			serviceStatusUpdate, err := utils.ServiceInfo(serviceEntity)
+			if err != nil {
+				beego.Error(err)
+				continue
+			}
+			Servicechan <- serviceStatusUpdate
+		}
+		<-tick
+	}
+
 }

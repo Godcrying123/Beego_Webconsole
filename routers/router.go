@@ -8,13 +8,14 @@ import (
 )
 
 func init() {
-	beego.Router("host/", &controllers.HostController{})
-	beego.Router("host/ws", &controllers.WebSocketController{})
-	// beego.Router("/host", &controllers.HostController{})
+	beego.Router("/", &controllers.IndexController{})
 	beego.Router("/step", &controllers.StepController{})
+	beego.Router("host/", &controllers.HostController{})
+	beego.Router("host/ws", &controllers.HostWebSocketController{})
 	beego.Router("/step/edit", &controllers.StepController{}, "get:Edit")
-	beego.AutoRouter(&controllers.ServiceController{})
 	beego.Router("/service", &controllers.ServiceController{})
+	beego.Router("/service/ws", &controllers.ServiceWebSocketController{})
+	beego.Router("/service/upload", &controllers.ServiceController{}, "get:Upload")
 	beego.Router("/file/*", &controllers.FileController{})
 	// beego.AutoRouter(&controllers.FileController{})
 }

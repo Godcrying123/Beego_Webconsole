@@ -8,6 +8,10 @@ type IndexController struct {
 	beego.Controller
 }
 
+func init() {
+
+}
+
 func (c *IndexController) Get() {
 	c.TplName = "index.html"
 }
