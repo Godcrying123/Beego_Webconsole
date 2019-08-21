@@ -12,6 +12,7 @@ func init() {
 	beego.Router("/step", &controllers.StepController{})
 	beego.Router("host/", &controllers.HostController{})
 	beego.Router("host/ws", &controllers.HostWebSocketController{})
+	beego.Router("ssh/ws", &controllers.SSHWebSocketController{})
 	beego.Router("/step/edit", &controllers.StepController{}, "get:Edit")
 	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/service/ws", &controllers.ServiceWebSocketController{})
