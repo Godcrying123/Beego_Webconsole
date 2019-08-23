@@ -22,6 +22,7 @@
                         <th>FileName</th>
                         <th>FileSize</th>
                         <th>FileLastModified</th>
+                        <th>Operation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,9 @@
                         <td><a href="/file{{.DirPath}}{{.DirName}}/">{{.DirName}}</a></td>
                         <td>{{.DirSize}}</td>
                         <td>{{.DirLastModified}}</td>
+                        <td>
+                            <input type="button" class="btn btn-primary" value="Download">
+                        </td>
                     </tr>
                     {{end}} {{range .fileData.ChildrenFiles}}
                     <tr>
@@ -38,6 +42,9 @@
                         <td><a href="/file{{.FilePath}}?editfile={{.FileName}}">{{.FileName}}</a></td>
                         <td>{{.FileSize}}</td>
                         <td>{{.FileLastModified}}</td>
+                        <td>
+                            <input type="button" class="btn btn-outline-primary" value="Download">
+                        </td>
                     </tr>
                     {{end}}
                 </tbody>
@@ -45,7 +52,7 @@
         </div>
         <form action="/file" method="post">
             <div class="form-group" style="width: 49%; position:fixed; left:51%;">
-                <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea" required>{{.File.FileContent}}</textarea>
+                <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea">{{.File.FileContent}}</textarea>
                 <hr>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Directory:</label>
@@ -53,10 +60,11 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">FileName:</label>
-                    <input type="text" class="form-control" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save" value="{{.File.FileName}}">
+                    <input type="text" class="form-control" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save or find" value="{{.File.FileName}}">
                 </div>
                 <hr>
                 <input type="submit" class="btn btn-primary" name="savefile" value="Save this File">
+                <input type="submit" class="btn btn-primary" name="findfile" value="Find the File">
             </div>
         </form>
     </div>

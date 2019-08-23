@@ -8,5 +8,4 @@ import (
 
 func main() {
 	beego.Run()
-	// utils.SSHServerConnection()
 }

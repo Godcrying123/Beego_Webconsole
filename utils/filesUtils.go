@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"archive/zip"
 	"bufio"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -78,4 +80,74 @@ func FileExistCheck(fileNameAndPath string) (Exist bool, err error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func CompressFiles(baseFolder, zipFilePath string) (err error) {
+	// Get a Buffer to Write To
+	outFile, err := os.Create(zipFilePath)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	defer outFile.Close()
+
+	// Create a new zip archive.
+	w := zip.NewWriter(outFile)
+
+	// Add some files to the archive.
+	err = addFiles(w, baseFolder, "")
+
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	// Make sure to check the error on Close.
+	err = w.Close()
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	return nil
+}
+
+func addFiles(w *zip.Writer, basePath, baseInZip string) (err error) {
+	// Open the Directory
+	files, err := ioutil.ReadDir(basePath)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	for _, file := range files {
+		fmt.Println(basePath + file.Name())
+		if !file.IsDir() {
+			dat, err := ioutil.ReadFile(basePath + file.Name())
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+
+			// Add some files to the archive.
+			f, err := w.Create(baseInZip + file.Name())
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+			_, err = f.Write(dat)
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+		} else if file.IsDir() {
+
+			// Recurse
+			newBase := basePath + file.Name() + "/"
+			fmt.Println("Recursing and Adding SubDir: " + file.Name())
+			fmt.Println("Recursing and Adding SubDir: " + newBase)
+
+			addFiles(w, newBase, baseInZip+file.Name()+"/")
+		}
+	}
+	return nil
 }

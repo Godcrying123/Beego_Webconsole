@@ -58,36 +58,53 @@ func (this *FileController) Get() {
 
 func (this *FileController) Post() {
 	this.TplName = "file.html"
-	fileContent := this.Input().Get("filecontent")
+	btn_save := this.Input().Get("savefile")
+	btn_find := this.Input().Get("findfile")
 	filePath := this.Input().Get("savefilepath")
 	fileName := this.Input().Get("savefilename")
-	beego.Info(fileContent)
-	beego.Info(filePath)
-	beego.Info(fileName)
-	ok, _ := utils.FileExistCheck(filePath + fileName)
-	if ok == false {
-		beego.Info("I am here")
-		beego.Info(ok)
-		File.FileName = fileName
-		File.FilePath = filePath
-		File.FileContent = fileContent
-		err := utils.FileWrite(File)
-		if err != nil {
-			beego.Error(err)
-		}
-	} else {
-		beego.Info("I am here")
-		File, err := utils.FileRead(fileName, filePath)
-		if err != nil {
-			beego.Error(err)
-		}
-		if File.FileContent != fileContent {
+	if btn_save != "" {
+		fileContent := this.Input().Get("filecontent")
+		// beego.Info(fileContent)
+		// beego.Info(filePath)
+		// beego.Info(fileName)
+		ok, _ := utils.FileExistCheck(filePath + fileName)
+		if ok == false {
+			beego.Info("I am here")
+			beego.Info(ok)
+			File.FileName = fileName
+			File.FilePath = filePath
 			File.FileContent = fileContent
+			err := utils.FileWrite(File)
+			if err != nil {
+				beego.Error(err)
+			}
+		} else {
+			beego.Info(urlstring)
+			File, err := utils.FileRead(fileName, filePath)
+			if err != nil {
+				beego.Error(err)
+			}
+			if File.FileContent != fileContent {
+				File.FileContent = fileContent
+			}
+			err = utils.FileWrite(File)
+			if err != nil {
+				beego.Error(err)
+			}
 		}
-		err = utils.FileWrite(File)
-		if err != nil {
-			beego.Error(err)
+	} else if btn_find != "" {
+		if fileName == "" {
+			urlstring = "/file" + filePath
+		} else {
+			_, err := utils.FileRead(fileName, filePath)
+			if err != nil {
+				urlstring = "/file" + filePath
+				beego.Error(err)
+			} else {
+				urlstring = "/file" + filePath + "?editfile=" + fileName
+			}
 		}
+		beego.Info(urlstring)
 	}
 	this.Redirect(urlstring, 302)
 }
@@ -154,28 +171,33 @@ func (this *FileController) handleDirectory(file *os.File) {
 	var childrenDirs []models.Directory
 	var childrenFilesTmp models.File
 	var childrenFiles []models.File
+	func() {
+		for _, val := range names {
+			if val.Name()[0] == '.' {
+				continue
+			}
+			if val.IsDir() {
+				func() {
+					childrenDirTmp.DirName = val.Name()
+					childrenDirTmp.DirSize = val.Size()
+					childrenDirTmp.DirLastModified = val.ModTime()
+					childrenDirTmp.DirAccess = val.Mode()
+					childrenDirTmp.DirPath = urlstring[5:]
+					childrenDirs = append(childrenDirs, childrenDirTmp)
+				}()
+			} else {
+				func() {
+					childrenFilesTmp.FileName = val.Name()
+					childrenFilesTmp.FileSize = val.Size()
+					childrenFilesTmp.FileLastModified = val.ModTime()
+					childrenFilesTmp.FileAccess = val.Mode()
+					childrenFilesTmp.FilePath = urlstring[5:]
+					childrenFiles = append(childrenFiles, childrenFilesTmp)
 
-	for _, val := range names {
-		if val.Name()[0] == '.' {
-			continue
+				}()
+			}
 		}
-		if val.IsDir() {
-			childrenDirTmp.DirName = val.Name()
-			childrenDirTmp.DirSize = val.Size()
-			childrenDirTmp.DirLastModified = val.ModTime()
-			childrenDirTmp.DirAccess = val.Mode()
-			childrenDirTmp.DirPath = urlstring[5:]
-			childrenDirs = append(childrenDirs, childrenDirTmp)
-		} else {
-			childrenFilesTmp.FileName = val.Name()
-			childrenFilesTmp.FileSize = val.Size()
-			childrenFilesTmp.FileLastModified = val.ModTime()
-			childrenFilesTmp.FileAccess = val.Mode()
-			childrenFilesTmp.FilePath = urlstring[5:]
-			childrenFiles = append(childrenFiles, childrenFilesTmp)
-		}
-	}
-
+	}()
 	// beego.Info(childrenDirs)
 	// beego.Info(childrenFiles)
 	fileData := models.DirListing1{
