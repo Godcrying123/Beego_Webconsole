@@ -85,7 +85,6 @@ func NewSshClient() (*ssh.Client, error) {
 		config.Auth = []ssh.AuthMethod{publicKeyAuthFunc(sshKeyPath)}
 	}
 	addr := fmt.Sprintf("%s:%s", sshHost, sshPort)
-	beego.Info(addr)
 	c, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		return nil, err
