@@ -1,51 +1,29 @@
 package controllers
 
 import (
-	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
 )
-
-var stepJsonStruct []models.MainSteps
 
 type StepController struct {
 	BaseController
 }
 
 func (this *StepController) Get() {
-	this.TplName = "step_upload.html"
-	this.Data["stepsData"] = stepJsonStruct
-}
-
-func (this *StepController) Post() {
-	this.TplName = "step_upload.html"
-	beego.Info("Running")
-	this.Import()
-}
-
-func (this *StepController) Edit() {
 	this.TplName = "step.html"
-	if len(stepJsonStruct) != 0 {
+	if len(StepJsonStruct) != 0 {
 		this.Data["stepExist"] = true
-		this.Data["stepList"] = stepJsonStruct
+		this.Data["stepList"] = StepJsonStruct
 		// beego.Info(stepJsonStruct)
 	} else {
 		this.Data["stepExist"] = false
 	}
 }
 
-func (this *StepController) Import() {
-	filePath, err := this.FileUploadAndSave("importfilestep", ".json")
-	if err != nil {
-		beego.Error(err)
-		return
-	}
-	stepJsonStruct, err = utils.StepJsonRead(filePath)
-	if err != nil {
-		beego.Error(err)
-	}
-	this.Redirect("/step", 302)
+func (this *StepController) Post() {
+	this.TplName = "step.html"
+	this.Export()
 }
 
 func (this *StepController) Export() {

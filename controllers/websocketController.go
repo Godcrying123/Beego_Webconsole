@@ -63,7 +63,7 @@ func (this *ServiceWebSocketController) Get() {
 	ServiceClients[ws] = true
 	go handleMessages()
 	for {
-		for _, serviceEntity := range jsonStruct {
+		for _, serviceEntity := range JsonStruct {
 			serviceStatusUpdate, err := utils.ServiceInfo(serviceEntity)
 			if err != nil {
 				beego.Error(err)

@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="../static/bootstrap-4.3.1/css/bootstrap.css">
-    <script type="text/javascript" src="../static/js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="../static/bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <title>Service List</title>
-</head>
-<div class="container">
-    <div id="accordion" style="width: 30%;">
+{{define "step"}}
+<div style="float: left; width: 22%; display: inline;">
+    <div id="accordion">
         {{range .stepsData}}
         <div class="card ">
             <div class="card-header" id="headingOne">
@@ -27,14 +18,13 @@
             </div>
         </div>
         {{end}}
-        <form action="/step" method="POST" enctype="multipart/form-data">
+        <form action="/" method="POST" enctype="multipart/form-data">
             <div>
-                <input type="button" value="Edit These Steps" onclick="javascript:window.location.href='/step/edit/';"></input>
-                <input type="file" name="importfilestep" value="Import step file" />
-                <input type="submit" name="importallsteps" value="Import New Steps" />
+                <input type="file" name="importfilestep" />
+                <input type="button" class="btn btn-primary" value="Edit" onclick="javascript:window.location.href='/step/';"></input>
+                <input type="submit" class="btn btn-primary" name="importallsteps" value="Import" />
             </div>
         </form>
     </div>
 </div>
-
-</html>
+{{end}}
