@@ -1,20 +1,15 @@
 {{template "header" .}}
-<link rel="stylesheet" href="../static/node_modules/xterm/dist/xterm.css" />
-<script src="../static/node_modules/xterm/dist/xterm.js"></script>
-<title>SMA Web Console</title>
+<title>xterm-demo2</title>
+<link href=../static/css/app.1076fd9ced186d68736fda0fd69859ab.css rel=stylesheet>
 </head>
 {{template "navbar" .}}
 
 <body>
-    {{template "step" .}}
-    <div id="terminal" style="float: left; width: 50%; display: inline;"></div>
-    <script>
-        var term = new Terminal();
-        term.open(document.getElementById('terminal'));
-        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-    </script>
-    {{template "host" .}} {{template "service" .}}
+    <!-- <div id=app></div> -->
+    <script type=text/javascript src=../static/js/manifest.2ae2e69a05c33dfc65f8.js></script>
+    <script type=text/javascript src=../static/js/vendor.b269b66396ea23887e61.js></script>
+    <script type=text/javascript src=../static/js/app.dc58f6007d6ba7d5500f.js></script>
+    <!-- {{template "step" .}} -->
 </body>
-<footer></footer>
 
 </html>

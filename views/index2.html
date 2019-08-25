@@ -1,0 +1,20 @@
+{{template "header" .}}
+<link rel="stylesheet" href="../static/node_modules/xterm/dist/xterm.css" />
+<script src="../static/node_modules/xterm/dist/xterm.js"></script>
+<title>SMA Web Console</title>
+</head>
+{{template "navbar" .}}
+
+<body>
+    {{template "step" .}}
+    <div id="terminal" style="float: left; width: 50%; display: inline;"></div>
+    <script>
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'));
+        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    </script>
+    {{template "host" .}} {{template "service" .}}
+</body>
+<footer></footer>
+
+</html>

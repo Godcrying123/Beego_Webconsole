@@ -128,7 +128,7 @@ func (this *FileController) Download() {
 
 	client := http.DefaultClient
 	client.Timeout = time.Second * 60 //设置超时时间
-	resp, err := client.Get("http://127.0.0.1" + urlstring[5:])
+	resp, err := client.Get("http://127.0.0.1" + urlstring)
 	beego.Info(resp)
 	if err != nil {
 		panic(err)

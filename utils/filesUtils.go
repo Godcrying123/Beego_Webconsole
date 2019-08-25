@@ -170,6 +170,7 @@ func FileDownLoad(fileName string, raw io.Reader) (err error) {
 		for {
 			nr, er := reader.Read(buff)
 			if nr > 0 {
+				beego.Info(buff)
 				nw, ew := writer.Write(buff[0:nr])
 				if nw > 0 {
 					written += nw

@@ -6,9 +6,9 @@
 <body>
     <div>
         <nav aria-label="breadcrumb">
-            <ul class="breadcrumb">
+            <ul class="nav nav-tabs">
                 {{range $key, $val := .navUrl}}
-                <li class="breadcrumb-item"><a href="/file/{{$val}}">{{$key}}</a></li>
+                <li class="nav-item"><a class="nav-link"  href="/file/{{$val}}">{{$key}}</a></li>
                 {{end}}
             </ul>
         </nav>
