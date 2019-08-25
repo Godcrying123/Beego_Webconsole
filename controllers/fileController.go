@@ -1,21 +1,27 @@
 package controllers
 
 import (
+	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"path"
-	"strings"
+	"time"
 	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
 )
 
-var root_folder string
-var navurlstring string
-var urlstring string
-var navurl []string
-var navurlsmap map[string]string
-var File models.File
+var (
+	root_folder  string
+	navurlstring string
+	urlstring    string
+	navurl       []string
+	navurlsmap   map[string]string
+	File         models.File
+	uses_gzip    *bool
+)
 
 const fs_maxbufsize = 4096
 
@@ -26,34 +32,40 @@ type FileController struct {
 
 func (this *FileController) Get() {
 	this.TplName = "file.html"
-	filename := this.Input().Get("editfile")
-	navurlsmap = make(map[string]string)
-	navurlsmap["/"] = "/"
-	urltmp := ""
+	// filename := this.Input().Get("editfile")
+	// navurlsmap = make(map[string]string)
+	// navurlsmap["/"] = "/"
+	// urltmp := ""
+	// urlstring = this.Ctx.Request.RequestURI
+	// if filename != "" {
+	// 	navurltmp := strings.Split(urlstring, "?")
+	// 	urlstring = navurltmp[0]
+	// 	navurl = strings.Split(navurltmp[0][5:], "/")
+	// 	File, err := utils.FileRead(filename, navurltmp[0][5:])
+	// 	if err != nil {
+	// 		beego.Error(err)
+	// 	}
+	// 	this.Data["File"] = File
+	// 	this.Data["baseUrl"] = urlstring[5:]
+	// 	this.FileList("/")
+	// } else {
+	// 	this.FileList("/")
+	// 	navurl = strings.Split(urlstring[5:], "/")
+	// 	this.Data["baseUrl"] = urlstring[5:]
+	// }
+	// func() {
+	// 	for i := 1; i < len(navurl)-1; i++ {
+	// 		urltmp = urltmp + navurl[i] + "/"
+	// 		navurlsmap[navurl[i]] = urltmp
+	// 	}
+	// }()
+	// this.Data["navUrl"] = navurlsmap
 	urlstring = this.Ctx.Request.RequestURI
-	if filename != "" {
-		navurltmp := strings.Split(urlstring, "?")
-		urlstring = navurltmp[0]
-		navurl = strings.Split(navurltmp[0][5:], "/")
-		File, err := utils.FileRead(filename, navurltmp[0][5:])
-		if err != nil {
-			beego.Error(err)
-		}
-		this.Data["File"] = File
-		this.Data["baseUrl"] = urlstring[5:]
-		this.FileList("/")
-	} else {
-		this.FileList("/")
-		navurl = strings.Split(urlstring[5:], "/")
-		this.Data["baseUrl"] = urlstring[5:]
+	_, err := url.ParseRequestURI(urlstring[5:])
+	if err != nil {
+		panic("网址错误")
 	}
-	func() {
-		for i := 1; i < len(navurl)-1; i++ {
-			urltmp = urltmp + navurl[i] + "/"
-			navurlsmap[navurl[i]] = urltmp
-		}
-	}()
-	this.Data["navUrl"] = navurlsmap
+	this.Download()
 }
 
 func (this *FileController) Post() {
@@ -107,6 +119,26 @@ func (this *FileController) Post() {
 		beego.Info(urlstring)
 	}
 	this.Redirect(urlstring, 302)
+}
+
+func (this *FileController) Download() {
+
+	filename := urlstring[5:]
+	beego.Info("[*] Filename " + filename)
+
+	client := http.DefaultClient
+	client.Timeout = time.Second * 60 //设置超时时间
+	resp, err := client.Get("http://127.0.0.1" + urlstring[5:])
+	beego.Info(resp)
+	if err != nil {
+		panic(err)
+	}
+	if resp.ContentLength <= 0 {
+		log.Println("[*] Destination server does not support breakpoint download.")
+	}
+	raw := resp.Body
+	defer raw.Close()
+	err = utils.FileDownLoad(filename, raw)
 }
 
 func (this *FileController) FileList(path string) error {
@@ -193,7 +225,6 @@ func (this *FileController) handleDirectory(file *os.File) {
 					childrenFilesTmp.FileAccess = val.Mode()
 					childrenFilesTmp.FilePath = urlstring[5:]
 					childrenFiles = append(childrenFiles, childrenFilesTmp)
-
 				}()
 			}
 		}

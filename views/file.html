@@ -43,7 +43,7 @@
                         <td>{{.FileSize}}</td>
                         <td>{{.FileLastModified}}</td>
                         <td>
-                            <input type="button" class="btn btn-outline-primary" value="Download">
+                            <input type="button" class="btn btn-outline-primary" value="Download" onclick="javascript:window.location.href='/file{{.FilePath}}?dl={{.FileName}}';">
                         </td>
                     </tr>
                     {{end}}
