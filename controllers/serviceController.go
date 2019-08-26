@@ -19,7 +19,7 @@ func (this *ServiceController) Get() {
 	} else {
 		this.Data["serviceExist"] = false
 	}
-
+	this.Data["stepList"] = StepJsonStruct
 }
 
 func (this *ServiceController) Post() {

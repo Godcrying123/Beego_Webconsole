@@ -8,7 +8,7 @@
         <nav aria-label="breadcrumb">
             <ul class="nav nav-tabs">
                 {{range $key, $val := .navUrl}}
-                <li class="nav-item"><a class="nav-link"  href="/file/{{$val}}">{{$key}}</a></li>
+                <li class="nav-item"><a class="nav-link" href="/file/{{$val}}">{{$key}}</a></li>
                 {{end}}
             </ul>
         </nav>
@@ -33,7 +33,7 @@
                         <td>{{.DirSize}}</td>
                         <td>{{.DirLastModified}}</td>
                         <td>
-                            <input type="button" class="btn btn-primary" value="Download">
+                            <input type="button" class="btn btn-primary" value="Download" onclick="javascript:window.location.href='/file{{.DirPath}}?dl={{.DirName}}/';">
                         </td>
                     </tr>
                     {{end}} {{range .fileData.ChildrenFiles}}

@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -86,7 +87,7 @@ func FileExistCheck(fileNameAndPath string) (Exist bool, err error) {
 	return false, err
 }
 
-func CompressFiles(baseFolder, zipFilePath string) (err error) {
+func compressFiles(baseFolder, zipFilePath string) (err error) {
 	// Get a Buffer to Write To
 	outFile, err := os.Create(zipFilePath)
 	if err != nil {
@@ -147,8 +148,8 @@ func addFiles(w *zip.Writer, basePath, baseInZip string) (err error) {
 
 			// Recurse
 			newBase := basePath + file.Name() + "/"
-			fmt.Println("Recursing and Adding SubDir: " + file.Name())
-			fmt.Println("Recursing and Adding SubDir: " + newBase)
+			// fmt.Println("Recursing and Adding SubDir: " + file.Name())
+			// fmt.Println("Recursing and Adding SubDir: " + newBase)
 
 			addFiles(w, newBase, baseInZip+file.Name()+"/")
 		}
@@ -170,7 +171,7 @@ func FileDownLoad(fileName string, raw io.Reader) (err error) {
 		for {
 			nr, er := reader.Read(buff)
 			if nr > 0 {
-				beego.Info(buff)
+				// beego.Info(buff)
 				nw, ew := writer.Write(buff[0:nr])
 				if nw > 0 {
 					written += nw
@@ -229,4 +230,71 @@ func bytesToSize(length int) string {
 	i := math.Floor(math.Log(float64(length)) / math.Log(float64(k)))
 	r := float64(length) / math.Pow(float64(k), i)
 	return strconv.FormatFloat(r, 'f', 3, 64) + " " + sizes[int(i)]
+}
+
+func DirAndFileDownLoad(writer http.ResponseWriter, request *http.Request, fileDir, fileName string) (err error) {
+	file, err := os.Open(fileDir + fileName)
+
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	statinfo, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	if statinfo.IsDir() {
+		zipFileName := strings.Trim(fileName, "/") + ".zip"
+		compressFiles(fileDir+fileName, fileDir+zipFileName)
+		err = downloadFile(writer, request, fileDir, zipFileName)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = downloadFile(writer, request, fileDir, fileName)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func downloadFile(writer http.ResponseWriter, request *http.Request, filePath, fileName string) (err error) {
+	beego.Info("[*] Filename " + fileName)
+
+	//Check if file exists and open
+	Openfile, err := os.Open(filePath + fileName)
+	defer Openfile.Close() //Close after function return
+	// writer := this.Ctx.ResponseWriter.ResponseWriter
+	if err != nil {
+		//File not found, send 404
+		http.Error(writer, "File not found.", 404)
+		return err
+	}
+
+	//File is found, create and send the correct headers
+
+	//Get the Content-Type of the file
+	//Create a buffer to store the header of the file in
+	FileHeader := make([]byte, 512)
+	//Copy the headers into the FileHeader buffer
+	Openfile.Read(FileHeader)
+	//Get content type of file
+	FileContentType := http.DetectContentType(FileHeader)
+
+	//Get the file size
+	FileStat, _ := Openfile.Stat()                     //Get info from file
+	FileSize := strconv.FormatInt(FileStat.Size(), 10) //Get file size as a string
+
+	//Send the headers
+	writer.Header().Set("Content-Disposition", "attachment; filename="+fileName)
+	writer.Header().Set("Content-Type", FileContentType)
+	writer.Header().Set("Content-Length", FileSize)
+
+	//Send the file
+	//We read 512 bytes from the file already, so we reset the offset back to 0
+	Openfile.Seek(0, 0)
+	io.Copy(writer, Openfile) //'Copy' the file to the client
+	return nil
 }

@@ -18,28 +18,35 @@
                         <a class="nav-link" href="/file/">Xlooklook<span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
+                <div class="form-inline my-2 my-lg-0">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Steps</a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink1">
-                                {{template "step" .}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink1" data-toggle="modal" data-target="#exampleModal" aria-haspopup="true" aria-expanded="false">All Steps</a>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    {{template "step" .}}
+                                </div>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Host Info</a>
-                            <div style="width: 200%;" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                                {{template "host" .}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" data-toggle="modal" data-target="#exampleModal1" aria-haspopup="true" aria-expanded="false" data-toggle=".bd-example-modal-lg">All Services</a>
+                            <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    {{template "service" .}}
+                                </div>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-toggle=".bd-example-modal-lg">All Services</a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink3">
-                                {{template "service" .}}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="modal" data-target=".bd-example-modal-lg" aria-haspopup="true" aria-expanded="false">Host Info</a>
+                            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    {{template "host" .}}
+                                </div>
                             </div>
                         </li>
+
                     </ul>
-                </form>
+                </div>
             </div>
         </nav>
     </div>
