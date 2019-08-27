@@ -9,6 +9,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.IndexController{})
+	beego.Router("/machine", &controllers.MachineController{})
 	beego.Router("/step", &controllers.StepController{})
 	beego.Router("host/", &controllers.HostController{})
 	beego.Router("host/ws", &controllers.HostWebSocketController{})

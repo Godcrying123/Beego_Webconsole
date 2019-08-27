@@ -17,6 +17,8 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+var tick = time.Tick
+
 type HostWebSocketController struct {
 	beego.Controller
 }
@@ -34,7 +36,7 @@ type SSHWebSocketController struct {
 }
 
 func (this *HostWebSocketController) Get() {
-	tick := time.Tick(4 * time.Second)
+	tick := time.Tick(5 * time.Second)
 	ws, err := upgrader.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil)
 	if err != nil {
 		beego.Error(err)

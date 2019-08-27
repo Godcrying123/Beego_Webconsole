@@ -129,7 +129,6 @@ func (this *FileController) Post() {
 }
 
 func (this *FileController) FileList(path string) error {
-	beego.Info("Starting to share the File List")
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		beego.Error(err)

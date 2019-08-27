@@ -2,61 +2,63 @@
 <title>step List</title>
 </head>
 {{template "navbar" .}}
-<div>
-    <div>
-        <ul>
-            <h3>This is the instructions of using this step editor</h3>
-            <li>1. Please make sure there is no empty element in this table</li>
-            <li>2. if you want to categorize steps with another step in the same category, please input the same main step</li>
-        </ul>
-    </div>
-    <hr>
-    <form method="POST" action="/step" target="iframestep">
-        <table border="1" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>Main Step</th>
-                    <th>Step Name</th>
-                    <th>Step Summary</th>
-                    <th>Step Command</th>
-                </tr>
-            </thead>
-            <hr>
-            <tbody id="step_tbody">
-                {{if .stepExist}} {{range $key, $val := .stepList}} {{range $val.SubSteps}}
-                <tr id="step_row2" style="vertical-align: top;">
-                    <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" value="{{$val.StepTitle}}" /></td>
-                    <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name">{{.StepName}}</textarea></td>
-                    <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary">{{.StepSummary}}</textarea></td>
-                    <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds">{{.StepCommand}}</textarea></td>
-                </tr>
-                {{end}} {{end}} {{else}}
-                <tr id="step_row1" style="vertical-align: top;">
-                    <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" /></td>
-                    <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name"></textarea></td>
-                    <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary"></textarea></td>
-                    <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds"></textarea></td>
-                </tr>
-                <tr id="step_row2" style="vertical-align: top;">
-                    <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" /></td>
-                    <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name"></textarea></td>
-                    <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary"></textarea></td>
-                    <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds"></textarea></td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
-        <input type="button" id="addstep" value="Add Step" />
-        <input type="submit" name="exportall" value="Export All" />
-    </form>
-    <iframe id="iframestep" name="iframestep" style="display:none;"></iframe>
-    <script>
-        $("#addstep").click(function() {
-            var new_tr = $("#step_row2").html();
-            $("#step_tbody").append("<tr>" + new_tr + "</tr>");
-        })
-    </script>
-</div>
 
+<body>
+    <div>
+        <div>
+            <ul>
+                <h3>This is the instructions of using this step editor</h3>
+                <li>1. Please make sure there is no empty element in this table</li>
+                <li>2. if you want to categorize steps with another step in the same category, please input the same main step</li>
+            </ul>
+        </div>
+        <hr>
+        <form method="POST" action="/step" target="iframestep">
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Main Step</th>
+                        <th>Step Name</th>
+                        <th>Step Summary</th>
+                        <th>Step Command</th>
+                    </tr>
+                </thead>
+                <hr>
+                <tbody id="step_tbody">
+                    {{if .stepExist}} {{range $key, $val := .stepList}} {{range $val.SubSteps}}
+                    <tr id="step_row2" style="vertical-align: top;">
+                        <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" value="{{$val.StepTitle}}" /></td>
+                        <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name">{{.StepName}}</textarea></td>
+                        <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary">{{.StepSummary}}</textarea></td>
+                        <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds">{{.StepCommand}}</textarea></td>
+                    </tr>
+                    {{end}} {{end}} {{else}}
+                    <tr id="step_row1" style="vertical-align: top;">
+                        <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" /></td>
+                        <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name"></textarea></td>
+                        <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary"></textarea></td>
+                        <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds"></textarea></td>
+                    </tr>
+                    <tr id="step_row2" style="vertical-align: top;">
+                        <td><input style="width: 100%;" type="text" name="main_step" placeholder="Input step name" /></td>
+                        <td><textarea style="width: 100%;" name="step_name" rows="2" style="OVERFLOW: hidden" placeholder="Input step name"></textarea></td>
+                        <td><textarea style="width: 100%;" name="step_summary" rows="2" style="OVERFLOW: hidden" placeholder="Input step summary"></textarea></td>
+                        <td><textarea style="width: 100%;" name="step_command" rows="2" style="OVERFLOW: hidden" placeholder="Input step coammds"></textarea></td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            <input type="button" id="addstep" value="Add Step" />
+            <input type="submit" name="exportall" value="Export All" />
+        </form>
+        <iframe id="iframestep" name="iframestep" style="display:none;"></iframe>
+        <script>
+            $("#addstep").click(function() {
+                var new_tr = $("#step_row2").html();
+                $("#step_tbody").append("<tr>" + new_tr + "</tr>");
+            })
+        </script>
+    </div>
+</body>
 
 </html>

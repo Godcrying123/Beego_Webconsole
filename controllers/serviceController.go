@@ -20,6 +20,7 @@ func (this *ServiceController) Get() {
 		this.Data["serviceExist"] = false
 	}
 	this.Data["stepList"] = StepJsonStruct
+	// beego.Info(StepJsonStruct)
 }
 
 func (this *ServiceController) Post() {

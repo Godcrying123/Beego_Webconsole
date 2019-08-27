@@ -1,0 +1,84 @@
+{{template "header" .}}
+<title>SMA-WebConsole</title>
+</head>
+<header>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/">SMA Web-Console</a>
+        </nav>
+    </div>
+</header>
+
+
+<body>
+    <div>
+        <div>
+            <ul>
+                <h3>This is the instructions of using this Host editor</h3>
+                <li>1. Please make sure there is no empty element in this table</li>
+                <li>2. Please choose your prefered auth type</li>
+                <li>3. You can leave port with empty value if your ssh port is 22</li>
+            </ul>
+        </div>
+        <hr>
+        <form method="POST" action="/machine" target="iframehost">
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>HostName</th>
+                        <th>HostIP</th>
+                        <th>User</th>
+                        <th>AuthType</th>
+                        <th>Password</th>
+                        <th>KeyFileAndPath</th>
+                        <th>Port</th>
+                    </tr>
+                </thead>
+                <hr>
+                <tbody id="step_tbody">
+                    <tr id="step_row1" style="vertical-align: top;">
+                        <td><input style="width: 100%;" type="text" placeholder="Input Host Name" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Host IP" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input User Name" /></td>
+                        <td>
+                            <select class="custom-select" id="inputGroupSelect01">
+                                <option selected>Choose...</option>
+                                <option value="1">Password</option>
+                                <option value="2">AuthKey</option>
+                            </select>
+                        </td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Password" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Key File Name and Path" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Port Num" /></td>
+                    </tr>
+                    <tr id="step_row1" style="vertical-align: top;">
+                        <td><input style="width: 100%;" type="text" placeholder="Input Host Name" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Host IP" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input User Name" /></td>
+                        <td>
+                            <select class="custom-select" id="inputGroupSelect01">
+                                    <option selected>Choose...</option>
+                                    <option value="1">Password</option>
+                                    <option value="2">AuthKey</option>
+                                </select>
+                        </td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Password" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Key File Name and Path" /></td>
+                        <td><input style="width: 100%;" type="text" placeholder="Input Port Num" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="button" id="addstep" value="Add Machine" />
+            <input type="submit" name="exportallmachines" value="Export All" />
+        </form>
+        <iframe id="iframehost" name="iframehost" style="display:none;"></iframe>
+        <script>
+            $("#addstep").click(function() {
+                var new_tr = $("#step_row2").html();
+                $("#step_tbody").append("<tr>" + new_tr + "</tr>");
+            })
+        </script>
+    </div>
+</body>
+
+</html>
