@@ -225,3 +225,7 @@ func (this *FileController) handleDirectory(file *os.File) {
 
 	this.Data["fileData"] = fileData
 }
+
+func (this *FileController) GetSFTP() {
+	this.TplName = "file.html"
+}

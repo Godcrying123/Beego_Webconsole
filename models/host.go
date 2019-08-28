@@ -7,8 +7,17 @@ type Machine struct {
 	OS        string       `json:"OS"`
 	HostIp    []string
 	HostName  string
-	User      string
-	Password  string
+}
+
+type MachineSSH struct {
+	NodeName string `json:"nodename"`
+	HostIp   string `json:"hostip"`
+	HostName string `json:"hostname"`
+	UserName string `json:"username"`
+	Password string `json:"password"`
+	AuthType string `json:"authtype"`
+	SSHPort  string `json:"sshport"`
+	KeyFile  File
 }
 
 type CPUDetail struct {

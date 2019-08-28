@@ -78,7 +78,8 @@ func (this *ServiceWebSocketController) Get() {
 }
 
 func (this *SSHWebSocketController) Get() {
-	sshClient, err := utils.NewSshClient()
+	sshHost := SSHHosts[HostName]
+	sshClient, err := utils.NewSshClient(sshHost)
 	if err != nil {
 		beego.Error(err)
 	}

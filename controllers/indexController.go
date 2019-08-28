@@ -13,7 +13,12 @@ var (
 	JsonStruct     map[string]models.Service
 	ServiceClients = make(map[*websocket.Conn]bool)
 	Servicechan    = make(chan models.Service)
+	HostName       string
 )
+
+func init() {
+
+}
 
 type IndexController struct {
 	BaseController
@@ -23,6 +28,11 @@ func (this *IndexController) Get() {
 	this.TplName = "index.html"
 	this.Data["stepsData"] = StepJsonStruct
 	this.Data["services"] = JsonStruct
+	HostName = this.Ctx.Input.Param(":hostname")
+	if HostName == "" {
+		HostName = "localhost"
+	}
+	beego.Info(HostName)
 }
 
 func (this *IndexController) Post() {

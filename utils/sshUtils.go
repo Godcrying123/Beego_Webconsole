@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"webconsole_sma/models"
 
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/go-homedir"
@@ -26,12 +27,7 @@ var (
 	SSHClients    = make(map[*websocket.Conn]bool)
 	CommandOutput = make(chan string)
 	CommandInput  = make(chan string)
-	sshHost       = beego.AppConfig.String("sshHost")
-	sshUser       = beego.AppConfig.String("sshUser")
-	sshPassword   = beego.AppConfig.String("sshPassword")
-	sshPort       = beego.AppConfig.String("sshPort")
-	sshType       = beego.AppConfig.String("sshType")
-	sshKeyPath    = beego.AppConfig.String("sshKeyPath")
+	SSHHosts      = make(map[string]models.MachineSSH)
 )
 
 // copy data from WebSocket to ssh server
@@ -42,6 +38,23 @@ var (
 type wsBufferWriter struct {
 	buffer bytes.Buffer
 	mu     sync.Mutex
+}
+
+func init() {
+	var localHost = models.MachineSSH{
+		NodeName: "localhost",
+		HostIp:   beego.AppConfig.String("sshHostIP"),
+		HostName: beego.AppConfig.String("sshHost"),
+		UserName: beego.AppConfig.String("sshUser"),
+		Password: beego.AppConfig.String("sshPassword"),
+		AuthType: beego.AppConfig.String("sshType"),
+		SSHPort:  beego.AppConfig.String("sshPort"),
+	}
+	SSHHosts["localhost"] = localHost
+}
+
+func SSHMapExport() map[string]models.MachineSSH {
+	return SSHHosts
 }
 
 // implement Write interface to write bytes from ssh server into bytes.Buffer.
@@ -72,19 +85,19 @@ type SshConn struct {
 	Session     *ssh.Session
 }
 
-func NewSshClient() (*ssh.Client, error) {
+func NewSshClient(machine models.MachineSSH) (*ssh.Client, error) {
 	config := &ssh.ClientConfig{
 		Timeout:         time.Second * 5,
-		User:            sshUser,
+		User:            machine.UserName,
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(), //????, ??????
 		//HostKeyCallback: hostKeyCallBackFunc(h.Host),
 	}
-	if sshType == "password" {
-		config.Auth = []ssh.AuthMethod{ssh.Password(sshPassword)}
+	if machine.AuthType == "password" {
+		config.Auth = []ssh.AuthMethod{ssh.Password(machine.Password)}
 	} else {
-		config.Auth = []ssh.AuthMethod{publicKeyAuthFunc(sshKeyPath)}
+		config.Auth = []ssh.AuthMethod{publicKeyAuthFunc(machine.KeyFile.FilePath)}
 	}
-	addr := fmt.Sprintf("%s:%s", sshHost, sshPort)
+	addr := fmt.Sprintf("%s:%s", machine.HostIp, machine.SSHPort)
 	c, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		return nil, err

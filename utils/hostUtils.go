@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"strings"
 	"webconsole_sma/models"
 
@@ -63,4 +64,38 @@ func HostInfoRead() (hostoutput models.Machine, err error) {
 		}
 	}
 	return hostoutput, nil
+}
+
+func HostJsonGenerator() (message string, err error) {
+	var builder strings.Builder
+	for _, hostentity := range SSHHosts {
+		output, err := json.MarshalIndent(hostentity, "", "\t")
+		if err != nil {
+			beego.Error(err)
+			return "", err
+		}
+		builder.Write(output)
+		builder.WriteString(",\n")
+	}
+	err = WriteJson(builder, "json/all_host_infos.json")
+	return "all hosts info have been exported to JSON successfully!", nil
+}
+
+func HostSave(nodenames, hostips, hostnames, users, passwords, authtypes, sshports, keyfiles []string) (err error) {
+	for index := 0; index < len(nodenames); index++ {
+		sshHost := models.MachineSSH{
+			NodeName: strings.Trim(nodenames[index], " "),
+			HostName: strings.Trim(hostnames[index], " "),
+			HostIp:   strings.Trim(hostips[index], " "),
+			UserName: strings.Trim(users[index], " "),
+			Password: strings.Trim(passwords[index], " "),
+			SSHPort:  strings.Trim(sshports[index], " "),
+			AuthType: strings.Trim(authtypes[index], " "),
+		}
+		if sshports[index] == "" {
+			sshHost.SSHPort = "22"
+		}
+		SSHHosts[sshHost.NodeName] = sshHost
+	}
+	return
 }
