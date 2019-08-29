@@ -200,7 +200,7 @@ func (this *FileController) handleDirectory(file *os.File) {
 					childrenDirTmp.DirSize = val.Size()
 					childrenDirTmp.DirLastModified = val.ModTime()
 					childrenDirTmp.DirAccess = val.Mode()
-					childrenDirTmp.DirPath = urlstring[5:]
+					childrenDirTmp.DirPath = urlstring
 					childrenDirs = append(childrenDirs, childrenDirTmp)
 				}()
 			} else {
@@ -209,7 +209,7 @@ func (this *FileController) handleDirectory(file *os.File) {
 					childrenFilesTmp.FileSize = val.Size()
 					childrenFilesTmp.FileLastModified = val.ModTime()
 					childrenFilesTmp.FileAccess = val.Mode()
-					childrenFilesTmp.FilePath = urlstring[5:]
+					childrenFilesTmp.FilePath = urlstring
 					childrenFiles = append(childrenFiles, childrenFilesTmp)
 				}()
 			}
@@ -228,4 +228,5 @@ func (this *FileController) handleDirectory(file *os.File) {
 
 func (this *FileController) GetSFTP() {
 	this.TplName = "file.html"
+
 }

@@ -104,6 +104,7 @@ func NewSshClient(machine models.MachineSSH) (*ssh.Client, error) {
 	}
 	return c, nil
 }
+
 func hostKeyCallBackFunc(host string) ssh.HostKeyCallback {
 	hostPath, err := homedir.Expand("~/.ssh/known_hosts")
 	if err != nil {

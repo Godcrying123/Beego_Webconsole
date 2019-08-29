@@ -32,7 +32,7 @@ func (this *IndexController) Get() {
 	if HostName == "" {
 		HostName = "localhost"
 	}
-	beego.Info(HostName)
+	// beego.Info(HostName)
 }
 
 func (this *IndexController) Post() {
