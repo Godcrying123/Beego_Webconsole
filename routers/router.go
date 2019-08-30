@@ -19,6 +19,7 @@ func init() {
 	beego.Router("/service", &controllers.ServiceController{})
 	beego.Router("/service/ws", &controllers.ServiceWebSocketController{})
 	beego.Router("/file/*", &controllers.FileController{})
+	beego.Router("/sftp/file/", &controllers.STFPController{}, "post:SaveAndFind")
 	// beego.Router("/node/:hostname([\\w]+)/file/", &controllers.FileController{}, "get:GetSFTP")
 	beego.Router("/node/:hostname/file/*", &controllers.STFPController{})
 }

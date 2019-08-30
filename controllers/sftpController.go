@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"archive/zip"
+	"bufio"
 	"bytes"
 	"io"
 	"net/http"
@@ -78,13 +79,20 @@ func (this *STFPController) Get() {
 	this.Data["navUrl"] = navurlsmap
 	// defer sshConn.Close()
 	// defer sftpConn.Close()
+	this.Data["baseUrl"] = sftpPath
+}
+
+func (this *STFPController) SaveAndFind() {
+	this.TplName = "file.html"
+	beego.Info("I am here")
+	this.Redirect(sftpPath, 302)
 }
 
 func (this *STFPController) editAndDownFiles(fileName, dlFileName string, sftpConn *sftp.Client) (err error) {
 	navurltmp := editAndSFTPURLParse()
 	sftpPath = navurltmp[0]
 	if fileName != "" {
-		err = this.editAndReadFiles(fileName, sftpConn)
+		err = this.readFiles(fileName, sftpConn)
 		if err != nil {
 			beego.Error(err)
 			return err
@@ -99,8 +107,33 @@ func (this *STFPController) editAndDownFiles(fileName, dlFileName string, sftpCo
 	return nil
 }
 
-func (this *STFPController) editAndReadFiles(fileName string, sftpConn *sftp.Client) (err error) {
-
+func (this *STFPController) readFiles(fileName string, sftpConn *sftp.Client) (err error) {
+	var builder strings.Builder
+	var showFile models.File
+	showFile.FileName = fileName
+	showFile.FilePath = sftpPath
+	readFile, err := sftpConn.Open(sftpPath + fileName)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	defer readFile.Close()
+	bufReader := bufio.NewReader(readFile)
+	for {
+		line, _, err := bufReader.ReadLine()
+		if err != nil {
+			if err == io.EOF {
+				err = nil
+				break
+			}
+		} else {
+			builder.Write(line)
+			builder.WriteString("\n")
+		}
+	}
+	fileString := builder.String()
+	showFile.FileContent = fileString
+	this.Data["File"] = showFile
 	return nil
 }
 
