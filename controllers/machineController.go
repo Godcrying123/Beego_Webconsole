@@ -28,14 +28,41 @@ func (this *MachineController) Post() {
 	this.TplName = "machine.html"
 	saveMachine_btn := this.Input().Get("saveallmachines")
 	exportMachine_btn := this.Input().Get("exportallmachines")
+	importMachine_btn := this.Input().Get("importallmachines")
 	if saveMachine_btn != "" {
 		this.Save()
 	} else if exportMachine_btn != "" {
 		this.Save()
 		this.Export()
+	} else if importMachine_btn != "" {
+		filePath, err := this.FileUploadAndSave("machinefile", ".json")
+		if err != nil {
+			beego.Error(err)
+			return
+		}
+		SSHHosts, err = utils.HostJsonRead(filePath)
+		if err != nil {
+			beego.Error(err)
+		}
 	}
 	this.Redirect("/machine", 301)
+}
 
+func (this *MachineController) PostMachines() {
+	this.TplName = "machine.html"
+	importMachine_btn := this.Input().Get("importallmachines")
+	beego.Info(importMachine_btn)
+	beego.Info("trying to import")
+	filePath, err := this.FileUploadAndSave("machinefile", ".json")
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	SSHHosts, err = utils.HostJsonRead(filePath)
+	if err != nil {
+		beego.Error(err)
+	}
+	this.Redirect("/machine", 301)
 }
 
 func (this *MachineController) Export() {

@@ -10,6 +10,7 @@ import (
 func init() {
 	beego.Router("/", &controllers.IndexController{})
 	beego.Router("/machine", &controllers.MachineController{})
+	beego.Router("/machine/import", &controllers.MachineController{}, "post:PostMachines")
 	beego.Router("/node/:hostname([\\w]+)", &controllers.IndexController{})
 	beego.Router("/step", &controllers.StepController{})
 	beego.Router("host/", &controllers.HostController{})

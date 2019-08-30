@@ -20,6 +20,7 @@ func (this *StepController) Get() {
 		this.Data["stepExist"] = false
 	}
 	this.Data["services"] = JsonStruct
+	this.Data["sshUrl"] = SSHUrl
 }
 
 func (this *StepController) Post() {

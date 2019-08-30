@@ -1,10 +1,14 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"strings"
 	"webconsole_sma/models"
 
+	"github.com/bitly/go-simplejson"
+	"github.com/mitchellh/mapstructure"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -98,4 +102,27 @@ func HostSave(nodenames, hostips, hostnames, users, passwords, authtypes, sshpor
 		SSHHosts[sshHost.NodeName] = sshHost
 	}
 	return
+}
+
+func HostJsonRead(filePath string) (jsonStruct map[string]models.MachineSSH, err error) {
+	var byter bytes.Buffer
+	jsonFile, err := ioutil.ReadFile(filePath)
+	jsonStruct = make(map[string]models.MachineSSH)
+	if err != nil {
+		beego.Error(err)
+		return nil, err
+	}
+	byter.Write([]byte("["))
+	byter.Write(jsonFile)
+	byter.Write([]byte("]"))
+	jsons, _ := simplejson.NewJson(byter.Bytes())
+	for _, jsonmap := range jsons.MustArray() {
+		machine := models.MachineSSH{}
+		err = mapstructure.WeakDecode(jsonmap.(map[string]interface{}), &machine)
+		if err != nil {
+			beego.Error(err)
+		}
+		jsonStruct[machine.NodeName] = machine
+	}
+	return jsonStruct, nil
 }

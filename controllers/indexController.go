@@ -14,6 +14,7 @@ var (
 	ServiceClients = make(map[*websocket.Conn]bool)
 	Servicechan    = make(chan models.Service)
 	HostName       string
+	SSHUrl         string
 )
 
 func init() {
@@ -29,9 +30,16 @@ func (this *IndexController) Get() {
 	this.Data["stepsData"] = StepJsonStruct
 	this.Data["services"] = JsonStruct
 	HostName = this.Ctx.Input.Param(":hostname")
+	if HostName != "" {
+		SSHUrl = "/node/" + HostName + "/"
+	} else {
+		SSHUrl = ""
+	}
+	beego.Info(SSHUrl)
 	if HostName == "" {
 		HostName = "localhost"
 	}
+	this.Data["sshUrl"] = SSHUrl
 	// beego.Info(HostName)
 }
 

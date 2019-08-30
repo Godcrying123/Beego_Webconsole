@@ -1,7 +1,12 @@
 package controllers
 
 import (
+	"archive/zip"
+	"bytes"
+	"io"
+	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"webconsole_sma/models"
 	"webconsole_sma/utils"
@@ -28,6 +33,7 @@ func (this *STFPController) Get() {
 	this.TplName = "file.html"
 	this.Data["stepsData"] = StepJsonStruct
 	this.Data["services"] = JsonStruct
+	this.Data["sshUrl"] = SSHUrl
 	urlstring = this.Ctx.Request.RequestURI
 	navurl = strings.Split(urlstring, "/file/")
 	sftpPath = "/" + navurl[1]
@@ -99,7 +105,8 @@ func (this *STFPController) editAndReadFiles(fileName string, sftpConn *sftp.Cli
 }
 
 func (this *STFPController) downloadFiles(dlFileName string, sftpConn *sftp.Client) (err error) {
-	downloadFile, err := sftpConn.OpenFile(sftpPath+dlFileName, os.O_WRONLY)
+	downloadFile, err := sftpConn.Open(sftpPath + dlFileName)
+	writer := this.Ctx.ResponseWriter
 	if err != nil {
 		beego.Error(err)
 		return err
@@ -110,14 +117,156 @@ func (this *STFPController) downloadFiles(dlFileName string, sftpConn *sftp.Clie
 		return err
 	}
 	if statinfo.IsDir() {
-
+		zipFileName := strings.Trim(dlFileName, "/") + ".zip"
+		err := compressFiles(sftpPath+dlFileName, sftpPath+zipFileName, sftpConn)
+		if err != nil {
+			beego.Error(err)
+			return err
+		}
+		zipFile, err := sftpConn.Open(sftpPath + zipFileName)
+		if err != nil {
+			beego.Error(err)
+			return err
+		}
+		defer zipFile.Close()
+		err = dirAndFileDownloadToClient(writer, this.Ctx.Request, zipFile, zipFileName)
+		if err != nil {
+			beego.Error(err)
+			return err
+		}
+		err = sftpConn.Remove(sftpPath + zipFileName)
+		if err != nil {
+			beego.Error(err)
+			return err
+		}
 	} else {
-		dstFile, _ := os.Create("/tmp/test.txt")
-		defer dstFile.Close()
-		srcFile, _ := sftpConn.Open("./file.txt")
-		defer srcFile.Close()
+		err = dirAndFileDownloadToClient(writer, this.Ctx.Request, downloadFile, dlFileName)
+		if err != nil {
+			beego.Error(err)
+			return err
+		}
+	}
+	defer writer.Flush()
+	return nil
+}
+
+func dirAndFileDownloadToClient(writer http.ResponseWriter, request *http.Request, downloadFile *sftp.File, dlFileName string) (err error) {
+	FileHeader := make([]byte, 512)
+	downloadFile.Read(FileHeader)
+	FileContentType := http.DetectContentType(FileHeader)
+	//Get the file size
+	statinfo, err := downloadFile.Stat()
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	FileSize := strconv.FormatInt(statinfo.Size(), 10) //Get file size as a string
+	//Send the headers
+	writer.Header().Set("Content-Disposition", "attachment; filename="+dlFileName)
+	writer.Header().Set("Content-Type", FileContentType)
+	writer.Header().Set("Content-Length", FileSize)
+	downloadFile.Seek(0, 0)
+	_, err = io.Copy(writer, downloadFile)
+	if err != nil {
+		beego.Error(err)
+		return err
 	}
 	return nil
+}
+
+func compressFiles(baseFolder, zipFilePath string, sftpConn *sftp.Client) (err error) {
+	outFile, err := sftpConn.Create(zipFilePath)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+	defer outFile.Close()
+
+	zipWriter := zip.NewWriter(outFile)
+
+	err = addFiles(zipWriter, baseFolder, "", sftpConn)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	err = zipWriter.Close()
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	return nil
+}
+
+func addFiles(w *zip.Writer, basePath, baseInZip string, sftpConn *sftp.Client) (err error) {
+	files, err := sftpConn.ReadDir(basePath)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	for _, file := range files {
+		// beego.Info(basePath + file.Name())
+		if !file.IsDir() {
+			subFile, err := sftpConn.Open(basePath + file.Name())
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+			defer subFile.Close()
+			var n int64 = bytes.MinRead
+			if fi, err := subFile.Stat(); err == nil {
+				if size := fi.Size() + bytes.MinRead; size > n {
+					n = size
+				}
+			}
+			data, err := readAll(subFile, n)
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+			f, err := w.Create(baseInZip + file.Name())
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+			_, err = f.Write(data)
+			if err != nil {
+				beego.Error(err)
+				return err
+			}
+		} else if file.IsDir() {
+			newBase := basePath + file.Name() + "/"
+			// fmt.Println("Recursing and Adding SubDir: " + file.Name())
+			// fmt.Println("Recursing and Adding SubDir: " + newBase)
+
+			addFiles(w, newBase, baseInZip+file.Name()+"/", sftpConn)
+		}
+	}
+	return nil
+}
+
+func readAll(r io.Reader, capacity int64) (b []byte, err error) {
+	var buf bytes.Buffer
+	// If the buffer overflows, we will get bytes.ErrTooLarge.
+	// Return that as an error. Any other panic remains.
+	defer func() {
+		e := recover()
+		if e == nil {
+			return
+		}
+		if panicErr, ok := e.(error); ok && panicErr == bytes.ErrTooLarge {
+			err = panicErr
+		} else {
+			panic(e)
+		}
+	}()
+	if int64(int(capacity)) == capacity {
+		buf.Grow(int(capacity))
+	}
+	_, err = buf.ReadFrom(r)
+	return buf.Bytes(), err
 }
 
 func editAndSFTPURLParse() []string {
