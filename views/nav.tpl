@@ -20,6 +20,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/file/">Xlooklook<span class="sr-only">(current)</span></a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownhost" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Host Connect</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownhost">
+                            {{range $key,$value := .machine}}
+                            <a class="dropdown-item" href="/node/{{$key}}" , target="_blank">{{$key}}->{{$value.HostName}}</a> {{end}}
+                        </div>
+                    </li>
                 </ul>
                 <div class="form-inline my-2 my-lg-0">
                     <ul class="navbar-nav mr-auto">
@@ -43,11 +50,12 @@
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="modal" data-target=".bd-example-modal-lg" aria-haspopup="true" aria-expanded="false">Host Info</a>
                             <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
-                                    {{template "host" .}}
+                                    <div class="modal-content">
+                                        {{template "host" .}}
+                                    </div>
                                 </div>
                             </div>
                         </li>
-
                     </ul>
                 </div>
             </div>

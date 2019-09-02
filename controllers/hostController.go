@@ -19,7 +19,8 @@ type HostController struct {
 }
 
 func (this *HostController) Get() {
-	this.TplName = "host.html"
+	this.TplName = "host_test.html"
+	beego.Info(hostOnAndOff)
 	// select {
 	// case turnOnOff := <-onAndOff:
 	// 	this.Data["switch"] = turnOnOff
@@ -34,43 +35,8 @@ func (this *HostController) Get() {
 	// this.Data["hostinfo"] = hostinfo
 }
 
-func (this *HostController) Post1() {
-	// this.TplName = "host.html"
-	// tick := time.Tick(2 * time.Second)
-	// syncoff := this.Input().Get("syncoff")
-	// syncon := this.Input().Get("syncon")
-	// if syncoff != "" {
-	// 	onAndOff <- false
-	// 	// ws.Close()
-	// 	this.Redirect("/host", 302)
-	// }
-	// if syncon != "" {
-	// 	onAndOff <- true
-	// 	// clients[ws] = true
-	// 	// defer ws.Close()
-	// 	go func() {
-	// 		for {
-	// 			hostinfo := <-hostchan
-	// 			for client := range clients {
-	// 				err := client.WriteJSON(hostinfo)
-	// 				if err != nil {
-	// 					log.Printf("client.WriteJSON error: %v", err)
-	// 					client.Close()
-	// 					delete(clients, client)
-	// 				}
-	// 			}
-
-	// 		}
-	// 	}()
-	// 	for {
-	// 		hostinfo, err := utils.HostInfoRead()
-	// 		if err != nil {
-	// 			this.Redirect("/host", 302)
-	// 			return
-	// 		}
-	// 		beego.Info("I am waiting")
-	// 		hostchan <- hostinfo
-	// 		<-tick
-	// 	}
-	// }
+func (this *HostController) Post() {
+	this.TplName = "host_test.html"
+	hostOnAndOff = !hostOnAndOff
+	// this.Redirect("/host", 302)
 }

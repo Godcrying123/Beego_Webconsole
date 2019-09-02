@@ -40,6 +40,7 @@ func (this *IndexController) Get() {
 		HostName = "localhost"
 	}
 	this.Data["sshUrl"] = SSHUrl
+	this.Data["machine"] = SSHHosts
 	// beego.Info(HostName)
 }
 
@@ -47,10 +48,13 @@ func (this *IndexController) Post() {
 	this.TplName = "index.html"
 	btn_stepimport := this.Input().Get("importallsteps")
 	btn_serviceimport := this.Input().Get("importall")
+	btn_hostonoff := this.Input().Get("syncoff")
 	if btn_stepimport != "" {
 		this.StepImport()
 	} else if btn_serviceimport != "" {
 		this.ServiceImport()
+	} else if btn_hostonoff != "" {
+		hostOnAndOff = !hostOnAndOff
 	}
 }
 

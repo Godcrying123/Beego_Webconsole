@@ -16,6 +16,7 @@ var upgrader = websocket.Upgrader{
 		return true
 	},
 }
+var hostOnAndOff bool = true
 
 var tick = time.Tick
 
@@ -45,13 +46,15 @@ func (this *HostWebSocketController) Get() {
 	HostClients[ws] = true
 	go handleMessages()
 	for {
-		hostinfo, err := utils.HostInfoRead()
-		if err != nil {
-			beego.Error(err)
-			return
+		if hostOnAndOff {
+			hostinfo, err := utils.HostInfoRead()
+			if err != nil {
+				beego.Error(err)
+				return
+			}
+			Hostchan <- hostinfo
+			<-tick
 		}
-		Hostchan <- hostinfo
-		<-tick
 	}
 }
 
@@ -101,6 +104,12 @@ func (this *SSHWebSocketController) Get() {
 	go sshConn.SendComboOutput(ws, quitChan)
 	go sshConn.SessionWait(quitChan)
 	<-quitChan
+}
+
+func (this *HostWebSocketController) StopHostSync() {
+	hostOnAndOff = !hostOnAndOff
+	beego.Info("I am trying to stop host sync")
+	this.Redirect("/host", 302)
 }
 
 func handleMessages() {

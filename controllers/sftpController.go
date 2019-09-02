@@ -32,6 +32,7 @@ type STFPController struct {
 
 func (this *STFPController) Get() {
 	this.TplName = "file.html"
+	this.Data["machine"] = SSHHosts
 	this.Data["stepsData"] = StepJsonStruct
 	this.Data["services"] = JsonStruct
 	this.Data["sshUrl"] = SSHUrl

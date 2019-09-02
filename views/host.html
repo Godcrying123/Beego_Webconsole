@@ -1,6 +1,10 @@
 {{define "host"}}
 <!-- <div style="width:20%; float: right;"> -->
-<div class="modal-content">
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel1">Hosts Info</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
     <div class="list-group">
         <a href="" class="list-group-item list-group-item-action active">Machine Info</a>
         <a class="list-group-item list-group-item-action" id="Hostname">Hostname: {{ .hostinfo.HostName }}</a>
@@ -32,60 +36,65 @@
         <a class="list-group-item list-group-item-action" id="AvailbleDisk">Availble Disk: {{ .hostinfo.DiskSpace.AvaileDisk }} B</a>
         <a class="list-group-item list-group-item-action" id="UsedDiskPercentage">Used Disk Percentage: {{ .hostinfo.DiskSpace.DiskPercentage }} %</a>
     </div>
-    <!-- <form method="post" action="/host" style="text-align: center;">
+</div>
+<div class="modal-footer">
+    <form method="post" action="/" style="text-align: center;">
+        <input type="submit" name="syncoff" value="On/Off" class="btn btn-primary mb-2">
+    </form>
+</div>
+<!-- <form method="post" action="/host" style="text-align: center;">
         <input style="width:40%" type="button" value="Refresh" class="btn btn-primary mb-2" onclick="javascript:window.location.href='/host/';"> {{if .switch}}
         <input style="width:40%" type="submit" name="syncoff" value="Auto-Sync Off" class="btn btn-primary mb-2"> {{else}}
         <input style="width:40%" type="submit" name="syncon" value="Auto-Sync On" class="btn btn-primary mb-2"> {{end}}
     </form> -->
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script>
-        $(function() {
-            var ws = new WebSocket('ws://' + window.location.host + '/host/ws')
-            ws.onmessage = function(event) {
-                // $('<li>').text(event.data).appendTo($ul);
-                var data = JSON.parse(event.data);
-                var CPU = data.CPU;
-                var Memory = data.Memory;
-                var HostName = data.HostName;
-                var OS = data.OS;
-                var Disk = data.DiskSpace;
-                hostname.text("Hostname: " + HostName);
-                hostos.text("OS: " + OS);
-                cpumodel.text("CPU Model: " + CPU.CPUModelandFrequency);
-                totalmemory.text("Total Memory: " + Memory.TotalMemory + " KB");
-                usedmemory.text("Used Memory: " + Memory.UsedMemory + " KB");
-                memoryusage.text("Memory Usage: " + Memory.MemoryPercentage + " %");
-                swap.text("Swap On or Off: " + Memory.SWAPonoff);
-                totaldisk.text("TotalDisk: " + Disk.TotalDisk + " B");
-                useddisk.text("Used Disk: " + Disk.UsedDisk + " B");
-                availdisk.text("Availble Disk: " + Disk.AvaileDisk + " B");
-                useddiskpercentage.text("Used Disk Percentage: " + Disk.DiskPercentage + " %");
-                var percentagelist = "";
-                for (let index = 0; index < CPU.CPUPercentage.length; index++) {
-                    percentagelist = percentagelist + "<a href=\"#\" class=\"list-group-item list-group-item-action\">" + "CPU " + index + " " + CPU.CPUPercentage[index] + " %</a>";
-                }
-                cpupercentage.html(percentagelist);
-            };
-            // ws.onopen = function(event) {
-            //     //var opendata = JSON.parse(event.data);
-            //     alert("The Socket has opended");
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(function() {
+        var ws = new WebSocket('ws://' + window.location.host + '/host/ws')
+        ws.onmessage = function(event) {
+            // $('<li>').text(event.data).appendTo($ul);
+            var data = JSON.parse(event.data);
+            var CPU = data.CPU;
+            var Memory = data.Memory;
+            var HostName = data.HostName;
+            var OS = data.OS;
+            var Disk = data.DiskSpace;
+            hostname.text("Hostname: " + HostName);
+            hostos.text("OS: " + OS);
+            cpumodel.text("CPU Model: " + CPU.CPUModelandFrequency);
+            totalmemory.text("Total Memory: " + Memory.TotalMemory + " KB");
+            usedmemory.text("Used Memory: " + Memory.UsedMemory + " KB");
+            memoryusage.text("Memory Usage: " + Memory.MemoryPercentage + " %");
+            swap.text("Swap On or Off: " + Memory.SWAPonoff);
+            totaldisk.text("TotalDisk: " + Disk.TotalDisk + " B");
+            useddisk.text("Used Disk: " + Disk.UsedDisk + " B");
+            availdisk.text("Availble Disk: " + Disk.AvaileDisk + " B");
+            useddiskpercentage.text("Used Disk Percentage: " + Disk.DiskPercentage + " %");
+            var percentagelist = "";
+            for (let index = 0; index < CPU.CPUPercentage.length; index++) {
+                percentagelist = percentagelist + "<a href=\"#\" class=\"list-group-item list-group-item-action\">" + "CPU " + index + " " + CPU.CPUPercentage[index] + " %</a>";
+            }
+            cpupercentage.html(percentagelist);
+        };
+        // ws.onopen = function(event) {
+        //     //var opendata = JSON.parse(event.data);
+        //     alert("The Socket has opended");
 
-            // };
+        // };
 
-            var hostname = $("#Hostname");
-            var hostos = $("#HostOS");
-            var cpumodel = $("#CPUModel");
-            var totalmemory = $("#TotalMemory");
-            var usedmemory = $("#UsedMemory");
-            var memoryusage = $("#MemoryUsage");
-            var swap = $("#SWAP");
-            var totaldisk = $("#TotalDisk");
-            var useddisk = $("#UsedDisk");
-            var availdisk = $("#AvailbleDisk");
-            var useddiskpercentage = $("#UsedDiskPercentage");
-            var cpupercentage = $("#CPUpercentage");
-            // alert(cpupercentage.html());
-        });
-    </script>
-</div>
+        var hostname = $("#Hostname");
+        var hostos = $("#HostOS");
+        var cpumodel = $("#CPUModel");
+        var totalmemory = $("#TotalMemory");
+        var usedmemory = $("#UsedMemory");
+        var memoryusage = $("#MemoryUsage");
+        var swap = $("#SWAP");
+        var totaldisk = $("#TotalDisk");
+        var useddisk = $("#UsedDisk");
+        var availdisk = $("#AvailbleDisk");
+        var useddiskpercentage = $("#UsedDiskPercentage");
+        var cpupercentage = $("#CPUpercentage");
+        // alert(cpupercentage.html());
+    });
+</script>
 {{end}}
