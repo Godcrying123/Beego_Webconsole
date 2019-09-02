@@ -1,5 +1,5 @@
 {{template "header" .}}
-<title>SMA-WebConsole</title>
+<title>SMA-WebConsole Machines</title>
 </head>
 <header>
     <div>
@@ -60,7 +60,7 @@
                         <td>
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
                             <div class="dropdown-menu">
-                                <input type="button" class="dropdown-item" value="Connect Host" onclick="javascript:window.location.href='/node/{{$key}}';"></input>
+                                <input type="button" class="dropdown-item" value="Connect Host" onclick="javascript:window.open('/node/{{$key}}', '_blank');" target="_blank"></input>
                             </div>
                         </td>
                     </tr>

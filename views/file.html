@@ -50,7 +50,7 @@
                 </tbody>
             </table>
         </div>
-        <form action="/sftp/file/" method="post">
+        <form action="{{.sshUrl}}file/" method="post">
             <div class="form-group" style="width: 49%; position:fixed; left:51%;">
                 <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea">{{.File.FileContent}}</textarea>
                 <hr>

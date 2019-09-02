@@ -82,10 +82,47 @@ func (this *STFPController) Get() {
 	this.Data["baseUrl"] = sftpPath
 }
 
-func (this *STFPController) SaveAndFind() {
+func (this *STFPController) Post() {
 	this.TplName = "file.html"
-	beego.Info("I am here")
-	this.Redirect(sftpPath, 302)
+	btn_save := this.Input().Get("savefile")
+	btn_find := this.Input().Get("findfile")
+	filePath := this.Input().Get("savefilepath")
+	fileName := this.Input().Get("savefilename")
+	beego.Info(sftpPath)
+	if btn_save != "" {
+		fileContent := this.Input().Get("filecontent")
+		sftpWriteFile, err := sftpConn.OpenFile(filePath+fileName, os.O_WRONLY|os.O_TRUNC|os.O_CREATE)
+		defer sftpWriteFile.Close()
+		File.FileName = fileName
+		File.FilePath = filePath
+		File.FileContent = fileContent
+		if err != nil {
+			beego.Error(err)
+		} else if os.IsNotExist(err) {
+			beego.Info("This File Not Existed!")
+			if _, err := sftpWriteFile.Write([]byte(File.FileContent)); err != nil {
+				beego.Error(err)
+			}
+		} else {
+			if _, err := sftpWriteFile.Write([]byte(File.FileContent)); err != nil {
+				beego.Error(err)
+			}
+		}
+		this.Redirect(BaseUrl+"file"+urlstring, 302)
+	} else if btn_find != "" {
+		if fileName == "" {
+			urlstring = "/file" + filePath
+		} else {
+			_, err := sftpConn.Open(filePath + fileName)
+			if err != nil {
+				urlstring = "/file" + filePath
+				beego.Error(err)
+			} else {
+				urlstring = "/file" + filePath + "?editfile=" + fileName
+			}
+		}
+		this.Redirect(BaseUrl+urlstring, 302)
+	}
 }
 
 func (this *STFPController) editAndDownFiles(fileName, dlFileName string, sftpConn *sftp.Client) (err error) {

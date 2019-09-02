@@ -33,9 +33,9 @@ func (this *IndexController) Get() {
 	if HostName != "" {
 		SSHUrl = "/node/" + HostName + "/"
 	} else {
-		SSHUrl = ""
+		SSHUrl = "/"
 	}
-	beego.Info(SSHUrl)
+	// beego.Info(SSHUrl)
 	if HostName == "" {
 		HostName = "localhost"
 	}
