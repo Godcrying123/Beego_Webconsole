@@ -30,11 +30,11 @@ func (this *TaskController) Post() {
 	btn_taskDetail := this.Input().Get("AllTaskDetails")
 	task_node := this.Input().Get("TaskNode")
 	task_command := this.Input().Get("TaskCommand")
-	beego.Info(btn_taskDetail)
-	beego.Info(task_node)
-	beego.Info(btn_runTask)
-	beego.Info(btn_runAllTask)
-	beego.Info(task_command)
+	// beego.Info(btn_taskDetail)
+	// beego.Info(task_node)
+	// beego.Info(btn_runTask)
+	// beego.Info(btn_runAllTask)
+	// beego.Info(task_command)
 	if btn_exportTask != "" {
 		this.Export()
 	} else if btn_importTask != "" {
@@ -45,17 +45,21 @@ func (this *TaskController) Post() {
 		if task_node != "" && task_command != "" {
 			eachTask.TaskNode = task_node
 			eachTask.TaskCommand = task_command
-			this.Run(eachTask)
+			err := this.Run(eachTask)
+			if err != nil {
+				beego.Error(err)
+			}
 		} else {
 			return
 		}
 	} else if btn_runAllTask != "" {
-		if btn_taskDetail == "" {
-			return
+		if btn_taskDetail != "" {
+			err := this.RunAllCmd(TaskJsonMap[btn_taskDetail])
+			if err != nil {
+				beego.Error(err)
+			}
 		} else {
-			beego.Info(TaskJsonMap[btn_taskDetail])
-			this.RunAllCmd(TaskJsonMap[btn_taskDetail])
-
+			return
 		}
 	}
 	this.Redirect("/task", 302)
@@ -87,10 +91,20 @@ func (this *TaskController) Import() {
 	// this.Data["taskData"] = TaskJsonMap
 }
 
-func (this *TaskController) Run(models.EachTask) {
-
+func (this *TaskController) Run(eachTask models.EachTask) (err error) {
+	err = utils.SSHConnTaskRun(SSHHosts[eachTask.TaskNode], eachTask.TaskCommand)
+	if err != nil {
+		beego.Error(err)
+	}
+	return nil
 }
 
-func (this *TaskController) RunAllCmd(models.MainTasks) {
-
+func (this *TaskController) RunAllCmd(mainTask models.MainTasks) (err error) {
+	for _, taskentity := range mainTask.SubTasks {
+		err := utils.SSHConnTaskRun(SSHHosts[taskentity.TaskNode], taskentity.TaskCommand)
+		if err != nil {
+			beego.Error(err)
+		}
+	}
+	return nil
 }

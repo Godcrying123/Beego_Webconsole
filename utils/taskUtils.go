@@ -97,3 +97,7 @@ func TaskJsonRead(filePath string) (map[string]models.MainTasks, error) {
 	}
 	return taskjsonMap, nil
 }
+
+func SSHConnTaskRun(node models.MachineSSH, cmd string) (err error) {
+	return err
+}
