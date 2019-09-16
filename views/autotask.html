@@ -1,0 +1,53 @@
+{{template "header" .}}
+<title>Task List</title>
+</head>
+
+<body>
+    <div>
+        <ul>
+            <h3>This is the instructions of using this Task editor</h3>
+            <li>1. Please make sure there is no empty element in this table</li>
+            <li>2. if you want to categorize steps with another task in the same category, please input the same task name</li>
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <form method="POST" action="/task" target="iframetask">
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Task Summary</th>
+                        <th>Task Target Node</th>
+                        <th>Task Commands</th>
+                    </tr>
+                </thead>
+                <tbody id="task_tbody" style="vertical-align: top;">
+                    <tr id="task_row2">
+                        <td><input style="width: 100%;" type="text" name="task_name" placeholder="Input Task Name" /></td>
+                        <td><textarea style="width: 100%;" name="task_summary" type="text" rows="2" style="OVERFLOW: hidden" placeholder="Input Task Summary"></textarea></td>
+                        <td><input style="width: 100%;" name="task_nodes" type="text" placeholder="Input Task Nodes" /></td>
+                        <td><textarea style="width: 100%;" name="task_commands" type="text" rows="2" style="OVERFLOW: hidden" placeholder="Input Task Commands"></textarea></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><input type="button" id="addtask" value="Add Task" /></td>
+                        <td><input type="submit" name="exportall" value="Export All" /></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+        <iframe id="iframetask" name="iframetask" style="display:none;"></iframe>
+        <script>
+            $("#addtask").click(function() {
+                var new_tr = $("#task_row2").html();
+                $("#task_tbody").append("<tr>" + new_tr + "</tr>");
+            })
+        </script>
+    </div>
+</body>
+
+</html>

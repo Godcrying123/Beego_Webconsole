@@ -217,7 +217,7 @@ func (this *FileController) handleDirectory(file *os.File) {
 	}()
 	// beego.Info(childrenDirs)
 	// beego.Info(childrenFiles)
-	fileData := models.DirListing1{
+	fileData := models.DirListing{
 		Name:          urlstring[5:],
 		ChildrenDirs:  childrenDirs,
 		ChildrenFiles: childrenFiles,

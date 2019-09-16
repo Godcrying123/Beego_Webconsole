@@ -15,12 +15,12 @@ func (this *StepController) Get() {
 	if len(StepJsonStruct) != 0 {
 		this.Data["stepExist"] = true
 		this.Data["stepList"] = StepJsonStruct
-		// beego.Info(stepJsonStruct)
 	} else {
 		this.Data["stepExist"] = false
 	}
 	this.Data["services"] = JsonStruct
 	this.Data["sshUrl"] = SSHUrl
+	beego.Info(SSHUrl)
 }
 
 func (this *StepController) Post() {

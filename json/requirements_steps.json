@@ -1,0 +1,21 @@
+{
+	"ID": 0,
+	"StepTitle": "",
+	"SubSteps": [
+		{
+			"StepID": 0,
+			"StepName": "",
+			"StepSummary": "",
+			"StepCommand": "",
+			"StepResults": ""
+		},
+		{
+			"StepID": 1,
+			"StepName": "",
+			"StepSummary": "",
+			"StepCommand": "",
+			"StepResults": ""
+		}
+	],
+	"MainStepResult": ""
+}

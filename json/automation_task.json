@@ -1,0 +1,56 @@
+{
+	"ID": 0,
+	"TaskTitle": "task 1",
+	"SubTasks": [
+		{
+			"TaskID": 0,
+			"TaskSummary": "task 1 summary",
+			"TaskNode": "localhost",
+			"TaskCommand": "ls",
+			"TaskResults": ""
+		},
+		{
+			"TaskID": 1,
+			"TaskSummary": "task 1 summary ",
+			"TaskNode": "node 1",
+			"TaskCommand": "ls",
+			"TaskResults": ""
+		}
+	],
+	"MainTaskResult": ""
+},
+{
+	"ID": 1,
+	"TaskTitle": "task 2",
+	"SubTasks": [
+		{
+			"TaskID": 2,
+			"TaskSummary": "task 2 sumary ",
+			"TaskNode": "node 1",
+			"TaskCommand": "ls",
+			"TaskResults": ""
+		}
+	],
+	"MainTaskResult": ""
+},
+{
+	"ID": 2,
+	"TaskTitle": "task 3",
+	"SubTasks": [
+		{
+			"TaskID": 3,
+			"TaskSummary": "task 3 summary",
+			"TaskNode": "node 1",
+			"TaskCommand": "ls",
+			"TaskResults": ""
+		},
+		{
+			"TaskID": 4,
+			"TaskSummary": "task 4 summary",
+			"TaskNode": "node 1",
+			"TaskCommand": "ls",
+			"TaskResults": ""
+		}
+	],
+	"MainTaskResult": ""
+}

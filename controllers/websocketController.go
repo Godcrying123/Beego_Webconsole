@@ -81,6 +81,7 @@ func (this *ServiceWebSocketController) Get() {
 }
 
 func (this *SSHWebSocketController) Get() {
+	this.TplName = "index.html"
 	sshHost := SSHHosts[HostName]
 	sshClient, err := utils.NewSshClient(sshHost)
 	if err != nil {

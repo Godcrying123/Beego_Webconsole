@@ -24,12 +24,6 @@ type Directory struct {
 }
 
 type DirListing struct {
-	Name           string
-	Children_dir   []string
-	Children_files []string
-}
-
-type DirListing1 struct {
 	Name          string
 	ChildrenDirs  []Directory
 	ChildrenFiles []File

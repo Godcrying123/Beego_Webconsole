@@ -1,42 +1,48 @@
 {
-    "ID": 0,
-    "ServiceName": "test3",
-    "ServiceVersion": "3",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625579+08:00"
-} 
+	"ID": 0,
+	"ServiceName": "bootstrap",
+	"ServiceVersion": "5.5.5",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
+},
 {
-    "ID": 1,
-    "ServiceName": "test4",
-    "ServiceVersion": "4",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625607+08:00"
-} 
+	"ID": 1,
+	"ServiceName": "chronyd",
+	"ServiceVersion": "4.4.4",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
+},
 {
-    "ID": 2,
-    "ServiceName": "test5",
-    "ServiceVersion": "5",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625663+08:00"
-} 
+	"ID": 2,
+	"ServiceName": "docker",
+	"ServiceVersion": "1.1.1",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
+},
 {
-    "ID": 3,
-    "ServiceName": "test6",
-    "ServiceVersion": "6",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625691+08:00"
-} 
+	"ID": 3,
+	"ServiceName": "firewalld",
+	"ServiceVersion": "3.3.3",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
+},
 {
-    "ID": 4,
-    "ServiceName": "test1",
-    "ServiceVersion": "1",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625701+08:00"
-}
+	"ID": 4,
+	"ServiceName": "sshd",
+	"ServiceVersion": "2.2.2",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
+},
 {
-    "ID": 5,
-    "ServiceName": "test2",
-    "ServiceVersion": "2",
-    "Status": false,
-    "LastStatusModifiedTime": "2019-08-04T09:55:59.625716+08:00"
+	"ID": 5,
+	"ServiceName": "docker-bootstrap",
+	"ServiceVersion": "6.6.6",
+	"ActiveStatus": "",
+	"RunningStatus": "",
+	"ServiceStatus": ""
 }

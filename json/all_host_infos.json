@@ -1,0 +1,36 @@
+{
+	"nodename": "node1",
+	"hostip": "16.186.79.97",
+	"hostname": "shcitsmacorecpe21.hpeswlab.net",
+	"username": "root",
+	"password": "iso*help",
+	"authtype": "password",
+	"sshport": "22",
+	"KeyFile": {
+		"FileName": "",
+		"FileType": "",
+		"FileAccess": 0,
+		"FileContent": "",
+		"FilePath": "",
+		"FileSize": 0,
+		"FileLastModified": "0001-01-01T00:00:00Z"
+	}
+},
+{
+	"nodename": "localhost",
+	"hostip": "16.186.79.97",
+	"hostname": "shcitsmacorecpe21.hpeswlab.net",
+	"username": "root",
+	"password": "iso*help",
+	"authtype": "password",
+	"sshport": "22",
+	"KeyFile": {
+		"FileName": "",
+		"FileType": "",
+		"FileAccess": 0,
+		"FileContent": "",
+		"FilePath": "",
+		"FileSize": 0,
+		"FileLastModified": "0001-01-01T00:00:00Z"
+	}
+}

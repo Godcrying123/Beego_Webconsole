@@ -89,7 +89,7 @@ func (this *STFPController) Post() {
 	btn_find := this.Input().Get("findfile")
 	filePath := this.Input().Get("savefilepath")
 	fileName := this.Input().Get("savefilename")
-	beego.Info(sftpPath)
+	// beego.Info(sftpPath)
 	if btn_save != "" {
 		fileContent := this.Input().Get("filecontent")
 		sftpWriteFile, err := sftpConn.OpenFile(filePath+fileName, os.O_WRONLY|os.O_TRUNC|os.O_CREATE)
@@ -342,8 +342,10 @@ func readAll(r io.Reader, capacity int64) (b []byte, err error) {
 
 func editAndSFTPURLParse() []string {
 	navurltmp := strings.Split(sftpPath, "?")
+	// beego.Info(len(navurltmp))
 	urlstring = navurltmp[0]
-	navurl = strings.Split(navurltmp[0][5:], "/")
+	// beego.Info(navurltmp)
+	// navurl = strings.Split(navurltmp[0][5:], "/")
 	return navurltmp
 }
 
@@ -395,7 +397,7 @@ func (this *STFPController) handleFile(sftpConn *sftp.Client) (err error) {
 			childrenFiles = append(childrenFiles, childrenFilesTmp)
 		}
 
-		sftSFTPData := models.DirListing1{
+		sftSFTPData := models.DirListing{
 			Name:          sftpPath,
 			ChildrenDirs:  childrenDirs,
 			ChildrenFiles: childrenFiles,
