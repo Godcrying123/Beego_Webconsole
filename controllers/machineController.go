@@ -16,7 +16,13 @@ type MachineController struct {
 }
 
 func init() {
-	SSHHosts = utils.SSHMapExport()
+	var err error
+	SSHHosts, err = utils.HostJsonRead("json/all_host_infos.json")
+	if err != nil {
+		beego.Error(err)
+		SSHHosts = utils.SSHMapExport()
+	}
+
 }
 
 func (this *MachineController) Get() {

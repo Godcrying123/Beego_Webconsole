@@ -4,6 +4,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
@@ -66,6 +67,9 @@ func (this *FileController) Get() {
 		}
 	}()
 	this.Data["navUrl"] = navurlsmap
+	this.Data["taskData"] = TaskJsonMap
+	this.Data["machine"] = SSHHosts
+	this.Data["sshUrl"] = SSHUrl
 }
 
 func editAndDLUrlParse() []string {
@@ -185,38 +189,48 @@ func (this *FileController) handleDirectory(file *os.File) {
 	}
 
 	// Otherwise, generate folder content.
+	var wg sync.WaitGroup
 	var childrenDirTmp models.Directory
 	var childrenDirs []models.Directory
 	var childrenFilesTmp models.File
 	var childrenFiles []models.File
 	func() {
 		for _, val := range names {
+			beego.Info(val)
 			if val.Name()[0] == '.' {
 				continue
 			}
 			if val.IsDir() {
-				func() {
+				// beego.Info(val.Name())
+				go func(wg *sync.WaitGroup) {
+					wg.Add(1)
 					childrenDirTmp.DirName = val.Name()
 					childrenDirTmp.DirSize = val.Size()
 					childrenDirTmp.DirLastModified = val.ModTime()
 					childrenDirTmp.DirAccess = val.Mode()
 					childrenDirTmp.DirPath = urlstring
 					childrenDirs = append(childrenDirs, childrenDirTmp)
-				}()
+					wg.Done()
+				}(&wg)
 			} else {
-				func() {
+				// beego.Info(val.Name())
+				go func(wg *sync.WaitGroup) {
+					wg.Add(1)
 					childrenFilesTmp.FileName = val.Name()
 					childrenFilesTmp.FileSize = val.Size()
 					childrenFilesTmp.FileLastModified = val.ModTime()
 					childrenFilesTmp.FileAccess = val.Mode()
 					childrenFilesTmp.FilePath = urlstring
 					childrenFiles = append(childrenFiles, childrenFilesTmp)
-				}()
+					wg.Done()
+				}(&wg)
 			}
 		}
 	}()
 	// beego.Info(childrenDirs)
 	// beego.Info(childrenFiles)
+	beego.Info(wg)
+	wg.Wait()
 	fileData := models.DirListing{
 		Name:          urlstring[5:],
 		ChildrenDirs:  childrenDirs,

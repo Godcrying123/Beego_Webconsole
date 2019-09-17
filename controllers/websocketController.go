@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"sync"
 	"time"
 	"webconsole_sma/utils"
 
@@ -16,9 +17,10 @@ var upgrader = websocket.Upgrader{
 		return true
 	},
 }
-var hostOnAndOff bool = true
 
+var hostOnAndOff bool = true
 var tick = time.Tick
+var mux sync.Mutex
 
 type HostWebSocketController struct {
 	beego.Controller
@@ -36,6 +38,35 @@ type SSHWebSocketController struct {
 	beego.Controller
 }
 
+func handleMessages(mux *sync.Mutex) {
+	for {
+		select {
+		case hostinfo := <-Hostchan:
+			for client := range HostClients {
+				mux.Lock()
+				err := client.WriteJSON(hostinfo)
+				mux.Unlock()
+				if err != nil {
+					beego.Error(err)
+					client.Close()
+					delete(HostClients, client)
+				}
+			}
+		case serviceinfo := <-Servicechan:
+			for client := range ServiceClients {
+				mux.Lock()
+				err := client.WriteJSON(serviceinfo)
+				mux.Unlock()
+				if err != nil {
+					beego.Error(err)
+					client.Close()
+					delete(ServiceClients, client)
+				}
+			}
+		}
+	}
+}
+
 func (this *HostWebSocketController) Get() {
 	tick := time.Tick(5 * time.Second)
 	ws, err := upgrader.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil)
@@ -44,7 +75,7 @@ func (this *HostWebSocketController) Get() {
 	}
 	defer ws.Close()
 	HostClients[ws] = true
-	go handleMessages()
+	go handleMessages(&mux)
 	for {
 		if hostOnAndOff {
 			hostinfo, err := utils.HostInfoRead()
@@ -66,7 +97,7 @@ func (this *ServiceWebSocketController) Get() {
 	}
 	defer ws.Close()
 	ServiceClients[ws] = true
-	go handleMessages()
+	go handleMessages(&mux)
 	for {
 		for _, serviceEntity := range JsonStruct {
 			serviceStatusUpdate, err := utils.ServiceInfo(serviceEntity)
@@ -111,29 +142,4 @@ func (this *HostWebSocketController) StopHostSync() {
 	hostOnAndOff = !hostOnAndOff
 	beego.Info("I am trying to stop host sync")
 	this.Redirect("/host", 302)
-}
-
-func handleMessages() {
-	for {
-		select {
-		case hostinfo := <-Hostchan:
-			for client := range HostClients {
-				err := client.WriteJSON(hostinfo)
-				if err != nil {
-					beego.Error(err)
-					client.Close()
-					delete(HostClients, client)
-				}
-			}
-		case serviceinfo := <-Servicechan:
-			for client := range ServiceClients {
-				err := client.WriteJSON(serviceinfo)
-				if err != nil {
-					beego.Error(err)
-					client.Close()
-					delete(ServiceClients, client)
-				}
-			}
-		}
-	}
 }

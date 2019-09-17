@@ -19,7 +19,9 @@ func (this *StepController) Get() {
 		this.Data["stepExist"] = false
 	}
 	this.Data["services"] = JsonStruct
+	this.Data["taskData"] = TaskJsonMap
 	this.Data["sshUrl"] = SSHUrl
+	this.Data["machine"] = SSHHosts
 	beego.Info(SSHUrl)
 }
 

@@ -105,6 +105,7 @@ func HostSave(nodenames, hostips, hostnames, users, passwords, authtypes, sshpor
 }
 
 func HostJsonRead(filePath string) (jsonStruct map[string]models.MachineSSH, err error) {
+	beego.Info(filePath)
 	var byter bytes.Buffer
 	jsonFile, err := ioutil.ReadFile(filePath)
 	jsonStruct = make(map[string]models.MachineSSH)

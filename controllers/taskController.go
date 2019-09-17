@@ -1,68 +1,39 @@
 package controllers
 
 import (
-	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
 	"github.com/astaxie/beego"
-)
-
-var (
-	TaskJsonMap map[string]models.MainTasks
 )
 
 type TaskController struct {
 	BaseController
 }
 
+func init() {
+}
+
 func (this *TaskController) Get() {
 	// this.TplName = "autotask.html"
-	this.TplName = "task_run.html"
-	this.Data["taskData"] = TaskJsonMap
+	this.TplName = "task.html"
+	if len(TaskJsonMap) != 0 {
+		this.Data["taskExist"] = true
+		this.Data["taskData"] = TaskJsonMap
+	} else {
+		this.Data["taskExist"] = false
+	}
+	this.Data["stepList"] = StepJsonStruct
+	this.Data["services"] = JsonStruct
+	this.Data["machine"] = SSHHosts
+	this.Data["sshUrl"] = SSHUrl
 }
 
 func (this *TaskController) Post() {
-	this.TplName = "task_run.html"
-	btn_exportTask := this.Input().Get("exportalltask")
-	btn_importTask := this.Input().Get("importalltasks")
-	btn_runTask := this.Input().Get("runTask")
-	btn_runAllTask := this.Input().Get("runAllTask")
-	btn_taskDetail := this.Input().Get("AllTaskDetails")
-	task_node := this.Input().Get("TaskNode")
-	task_command := this.Input().Get("TaskCommand")
-	// beego.Info(btn_taskDetail)
-	// beego.Info(task_node)
-	// beego.Info(btn_runTask)
-	// beego.Info(btn_runAllTask)
-	// beego.Info(task_command)
-	if btn_exportTask != "" {
-		this.Export()
-	} else if btn_importTask != "" {
-		beego.Info(btn_importTask)
-		this.Import()
-	} else if btn_runTask != "" {
-		eachTask := models.EachTask{}
-		if task_node != "" && task_command != "" {
-			eachTask.TaskNode = task_node
-			eachTask.TaskCommand = task_command
-			err := this.Run(eachTask)
-			if err != nil {
-				beego.Error(err)
-			}
-		} else {
-			return
-		}
-	} else if btn_runAllTask != "" {
-		if btn_taskDetail != "" {
-			err := this.RunAllCmd(TaskJsonMap[btn_taskDetail])
-			if err != nil {
-				beego.Error(err)
-			}
-		} else {
-			return
-		}
-	}
-	this.Redirect("/task", 302)
+	// this.TplName = "autotask.html"
+	this.TplName = "task.html"
+	// btn_exportTask := this.Input().Get("exportalltask")
+	this.Export()
+	// this.Redirect("/task", 302)
 }
 
 func (this *TaskController) Export() {
@@ -75,36 +46,4 @@ func (this *TaskController) Export() {
 	if err != nil {
 		beego.Error(err)
 	}
-}
-
-func (this *TaskController) Import() {
-	filePath, err := this.FileUploadAndSave("importfiletasks", ".json")
-	beego.Info(filePath)
-	if err != nil {
-		beego.Error(err)
-	}
-	TaskJsonMap, err = utils.TaskJsonRead(filePath)
-	if err != nil {
-		beego.Error(err)
-	}
-	beego.Info(TaskJsonMap)
-	// this.Data["taskData"] = TaskJsonMap
-}
-
-func (this *TaskController) Run(eachTask models.EachTask) (err error) {
-	err = utils.SSHConnTaskRun(SSHHosts[eachTask.TaskNode], eachTask.TaskCommand)
-	if err != nil {
-		beego.Error(err)
-	}
-	return nil
-}
-
-func (this *TaskController) RunAllCmd(mainTask models.MainTasks) (err error) {
-	for _, taskentity := range mainTask.SubTasks {
-		err := utils.SSHConnTaskRun(SSHHosts[taskentity.TaskNode], taskentity.TaskCommand)
-		if err != nil {
-			beego.Error(err)
-		}
-	}
-	return nil
 }

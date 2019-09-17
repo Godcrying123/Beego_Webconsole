@@ -99,5 +99,37 @@ func TaskJsonRead(filePath string) (map[string]models.MainTasks, error) {
 }
 
 func SSHConnTaskRun(node models.MachineSSH, cmd string) (err error) {
-	return err
+	beego.Info(cmd)
+	sshConn, err := NewSshClient(node)
+	if err != nil {
+		return err
+	}
+	defer sshConn.Close()
+	sshSess, err := sshConn.NewSession()
+	if err != nil {
+		return err
+	}
+	defer sshSess.Close()
+	buf, err := sshSess.CombinedOutput(cmd)
+	if err != nil {
+		return err
+	}
+	beego.Info(string(buf))
+	return nil
+	// sshSess.Stdout = os.Stdout
+	// sshSess.Stderr = os.Stderr
+	// err = sshSess.Shell()
+	// if err != nil {
+	// 	return err
+	// }
+	// for _, cmd := range cmd {
+
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+	// _, err = fmt.Fprintf(stdin, "%s\n", cmd)
+	// b, err := sshSess.Output()
+	// out := string(b)
+	// err = sshSess.Wait()
 }

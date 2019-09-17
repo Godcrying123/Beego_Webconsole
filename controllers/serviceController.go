@@ -20,6 +20,8 @@ func (this *ServiceController) Get() {
 		this.Data["serviceExist"] = false
 	}
 	this.Data["stepList"] = StepJsonStruct
+	this.Data["taskData"] = TaskJsonMap
+	this.Data["machine"] = SSHHosts
 	this.Data["sshUrl"] = SSHUrl
 }
 
