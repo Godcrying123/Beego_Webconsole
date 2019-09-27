@@ -375,34 +375,49 @@ func (this *STFPController) handleFile(sftpConn *sftp.Client) (err error) {
 		beego.Error(err)
 		return err
 	}
-	var childrenDirTmp models.Directory
-	var childrenDirs []models.Directory
-	var childrenFilesTmp models.File
-	var childrenFiles []models.File
+	var pVSFTP PassValue
+	// beego.Info(walkFiles)
+	pVSFTP.wg.Add(len(walkFiles))
 	for _, listFile := range walkFiles {
-		// if listFile.Name()[0] == "."
-		if listFile.IsDir() {
-			childrenDirTmp.DirName = listFile.Name()
-			childrenDirTmp.DirSize = listFile.Size()
-			childrenDirTmp.DirLastModified = listFile.ModTime()
-			childrenDirTmp.DirAccess = listFile.Mode()
-			childrenDirTmp.DirPath = BaseUrl + "file" + sftpPath
-			childrenDirs = append(childrenDirs, childrenDirTmp)
-		} else {
-			childrenFilesTmp.FileName = listFile.Name()
-			childrenFilesTmp.FileSize = listFile.Size()
-			childrenFilesTmp.FileLastModified = listFile.ModTime()
-			childrenFilesTmp.FileAccess = listFile.Mode()
-			childrenFilesTmp.FilePath = BaseUrl + "file" + sftpPath
-			childrenFiles = append(childrenFiles, childrenFilesTmp)
+		if listFile.Name()[0] == '.' {
+			beego.Info(listFile.Name())
+			pVSFTP.wg.Done()
+			continue
 		}
 
-		sftSFTPData := models.DirListing{
-			Name:          sftpPath,
-			ChildrenDirs:  childrenDirs,
-			ChildrenFiles: childrenFiles,
+		if listFile.IsDir() {
+			go func(pVSFTP *PassValue, listFile os.FileInfo) {
+				// pVSFTP.wg.Add(1)
+				pVSFTP.childrenDirTmp.DirName = listFile.Name()
+				pVSFTP.childrenDirTmp.DirSize = listFile.Size()
+				pVSFTP.childrenDirTmp.DirLastModified = listFile.ModTime()
+				pVSFTP.childrenDirTmp.DirAccess = listFile.Mode()
+				pVSFTP.childrenDirTmp.DirPath = BaseUrl + "file" + sftpPath
+				pVSFTP.childrenDirs = append(pVSFTP.childrenDirs, pVSFTP.childrenDirTmp)
+				pVSFTP.wg.Done()
+			}(&pVSFTP, listFile)
+		} else {
+			go func(pVSFTP *PassValue, listFile os.FileInfo) {
+				// pVSFTP.wg.Add(1)
+				pVSFTP.childrenFilesTmp.FileName = listFile.Name()
+				pVSFTP.childrenFilesTmp.FileSize = listFile.Size()
+				pVSFTP.childrenFilesTmp.FileLastModified = listFile.ModTime()
+				pVSFTP.childrenFilesTmp.FileAccess = listFile.Mode()
+				pVSFTP.childrenFilesTmp.FilePath = BaseUrl + "file" + sftpPath
+				pVSFTP.childrenFiles = append(pVSFTP.childrenFiles, pVSFTP.childrenFilesTmp)
+				// beego.Info("I am going there")
+				pVSFTP.wg.Done()
+			}(&pVSFTP, listFile)
 		}
-		this.Data["fileData"] = sftSFTPData
 	}
+	pVSFTP.wg.Wait()
+	// beego.Info(pVSFTP.childrenDirs)
+	// beego.Info(pVSFTP.childrenFiles)
+	sftSFTPData := models.DirListing{
+		Name:          sftpPath,
+		ChildrenDirs:  pVSFTP.childrenDirs,
+		ChildrenFiles: pVSFTP.childrenFiles,
+	}
+	this.Data["fileData"] = sftSFTPData
 	return nil
 }

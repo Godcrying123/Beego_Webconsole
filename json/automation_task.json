@@ -4,16 +4,16 @@
 	"SubTasks": [
 		{
 			"TaskID": 0,
-			"TaskSummary": "task 1 summary",
+			"TaskSummary": "summary 1",
 			"TaskNode": "localhost",
-			"TaskCommand": "ls",
+			"TaskCommand": "pwd",
 			"TaskResults": ""
 		},
 		{
 			"TaskID": 1,
-			"TaskSummary": "task 1 summary ",
-			"TaskNode": "node 1",
-			"TaskCommand": "ls",
+			"TaskSummary": "summary 2",
+			"TaskNode": "node1",
+			"TaskCommand": "whoami",
 			"TaskResults": ""
 		}
 	],
@@ -25,30 +25,16 @@
 	"SubTasks": [
 		{
 			"TaskID": 2,
-			"TaskSummary": "task 2 sumary ",
-			"TaskNode": "node 1",
-			"TaskCommand": "ls",
-			"TaskResults": ""
-		}
-	],
-	"MainTaskResult": ""
-},
-{
-	"ID": 2,
-	"TaskTitle": "task 3",
-	"SubTasks": [
-		{
-			"TaskID": 3,
-			"TaskSummary": "task 3 summary",
-			"TaskNode": "node 1",
-			"TaskCommand": "ls",
+			"TaskSummary": "summary 3",
+			"TaskNode": "localhost",
+			"TaskCommand": "pwd;hostname -i;whoami;timedatectl |grep Local",
 			"TaskResults": ""
 		},
 		{
-			"TaskID": 4,
-			"TaskSummary": "task 4 summary",
-			"TaskNode": "node 1",
-			"TaskCommand": "ls",
+			"TaskID": 3,
+			"TaskSummary": "summary 4",
+			"TaskNode": "node1",
+			"TaskCommand": "timedatectl |grep Local",
 			"TaskResults": ""
 		}
 	],

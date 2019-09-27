@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"strings"
+	"sync"
 	"webconsole_sma/models"
 	"webconsole_sma/utils"
 
@@ -18,6 +19,7 @@ var (
 	HostName       string
 	SSHUrl         string
 )
+var cmdwg *sync.WaitGroup
 
 func init() {
 	var err error
@@ -99,10 +101,15 @@ func (this *IndexController) Post() {
 		}
 	} else if btn_runAllTask != "" {
 		if btn_taskDetail != "" {
-			err := this.RunAllCmd(TaskJsonMap[btn_taskDetail])
-			if err != nil {
-				beego.Error(err)
-			}
+			go func() {
+				err := this.RunAllCmd(TaskJsonMap[btn_taskDetail])
+				if err != nil {
+					beego.Error(err)
+				} else {
+					beego.Info("This Job has been executed successfully")
+				}
+
+			}()
 		} else {
 			return
 		}

@@ -28,6 +28,14 @@ type FileController struct {
 	beego.Controller
 }
 
+type PassValue struct {
+	wg               sync.WaitGroup
+	childrenDirTmp   models.Directory
+	childrenDirs     []models.Directory
+	childrenFilesTmp models.File
+	childrenFiles    []models.File
+}
+
 func (this *FileController) Get() {
 	this.TplName = "file.html"
 	this.Data["stepsData"] = StepJsonStruct
@@ -55,7 +63,7 @@ func (this *FileController) Get() {
 		}
 
 	} else {
-		this.FileList("/")
+		// this.FileList("/")
 		navurl = strings.Split(urlstring[5:], "/")
 	}
 	this.FileList("/")
@@ -189,52 +197,53 @@ func (this *FileController) handleDirectory(file *os.File) {
 	}
 
 	// Otherwise, generate folder content.
-	var wg sync.WaitGroup
-	var childrenDirTmp models.Directory
-	var childrenDirs []models.Directory
-	var childrenFilesTmp models.File
-	var childrenFiles []models.File
-	func() {
-		for _, val := range names {
-			beego.Info(val)
-			if val.Name()[0] == '.' {
-				continue
-			}
-			if val.IsDir() {
-				// beego.Info(val.Name())
-				go func(wg *sync.WaitGroup) {
-					wg.Add(1)
-					childrenDirTmp.DirName = val.Name()
-					childrenDirTmp.DirSize = val.Size()
-					childrenDirTmp.DirLastModified = val.ModTime()
-					childrenDirTmp.DirAccess = val.Mode()
-					childrenDirTmp.DirPath = urlstring
-					childrenDirs = append(childrenDirs, childrenDirTmp)
-					wg.Done()
-				}(&wg)
-			} else {
-				// beego.Info(val.Name())
-				go func(wg *sync.WaitGroup) {
-					wg.Add(1)
-					childrenFilesTmp.FileName = val.Name()
-					childrenFilesTmp.FileSize = val.Size()
-					childrenFilesTmp.FileLastModified = val.ModTime()
-					childrenFilesTmp.FileAccess = val.Mode()
-					childrenFilesTmp.FilePath = urlstring
-					childrenFiles = append(childrenFiles, childrenFilesTmp)
-					wg.Done()
-				}(&wg)
-			}
+	var pv PassValue
+	pv.wg.Add(len(names))
+	for _, val := range names {
+		// beego.Info(val)
+		if val.Name()[0] == '.' {
+			pv.wg.Done()
+			continue
 		}
-	}()
-	// beego.Info(childrenDirs)
-	// beego.Info(childrenFiles)
-	beego.Info(wg)
-	wg.Wait()
+		if val.IsDir() {
+			// beego.Info(val.Name())
+			go func(pV *PassValue, val os.FileInfo) {
+				// pv.wg.Add(1)
+				// beego.Info(val.Name())
+				pv.childrenDirTmp.DirName = val.Name()
+				pv.childrenDirTmp.DirSize = val.Size()
+				pv.childrenDirTmp.DirLastModified = val.ModTime()
+				pv.childrenDirTmp.DirAccess = val.Mode()
+				pv.childrenDirTmp.DirPath = urlstring
+				pv.childrenDirs = append(pv.childrenDirs, pv.childrenDirTmp)
+				// beego.Info(pv.childrenDirs)
+				pv.wg.Done()
+			}(&pv, val)
+		} else {
+			// beego.Info(val.Name())
+			go func(pV *PassValue, val os.FileInfo) {
+				// pv.wg.Add(1)
+				// beego.Info(val.Name())
+				pv.childrenFilesTmp.FileName = val.Name()
+				pv.childrenFilesTmp.FileSize = val.Size()
+				pv.childrenFilesTmp.FileLastModified = val.ModTime()
+				pv.childrenFilesTmp.FileAccess = val.Mode()
+				pv.childrenFilesTmp.FilePath = urlstring
+				pv.childrenFiles = append(pv.childrenFiles, pv.childrenFilesTmp)
+				// beego.Info(pv.childrenFiles)
+				pv.wg.Done()
+			}(&pv, val)
+		}
+	}
+
+	// beego.Info(wg)
+	pv.wg.Wait()
+	// beego.Info(pv.childrenDirs)
+	// beego.Info(pv.childrenFiles)
 	fileData := models.DirListing{
 		Name:          urlstring[5:],
-		ChildrenDirs:  childrenDirs,
-		ChildrenFiles: childrenFiles,
+		ChildrenDirs:  pv.childrenDirs,
+		ChildrenFiles: pv.childrenFiles,
 	}
 
 	this.Data["fileData"] = fileData
