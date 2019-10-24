@@ -58,9 +58,7 @@ console, and run every task group by one-click like below page.
 
 ### How To Deploy ###
 * this is a golang coded application, so this is very easy to deploy this application in your environment without any dependencies installed.
-1. download the tar file using below command:
-
-> `go get github.com/Godcrying123/Beego_Webconsole.git`
+1. download the tar file
 
 2. untar this tar package by command:
 
