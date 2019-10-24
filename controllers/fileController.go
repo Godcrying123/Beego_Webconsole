@@ -29,6 +29,7 @@ type FileController struct {
 }
 
 type PassValue struct {
+	mux              sync.Mutex
 	wg               sync.WaitGroup
 	childrenDirTmp   models.Directory
 	childrenDirs     []models.Directory
@@ -198,7 +199,11 @@ func (this *FileController) handleDirectory(file *os.File) {
 
 	// Otherwise, generate folder content.
 	var pv PassValue
+	var test int = 0
+	var p *int = &test
+	beego.Info(*p)
 	pv.wg.Add(len(names))
+	beego.Info(len(names))
 	for _, val := range names {
 		// beego.Info(val)
 		if val.Name()[0] == '.' {
@@ -208,29 +213,27 @@ func (this *FileController) handleDirectory(file *os.File) {
 		if val.IsDir() {
 			// beego.Info(val.Name())
 			go func(pV *PassValue, val os.FileInfo) {
-				// pv.wg.Add(1)
-				// beego.Info(val.Name())
+				pv.mux.Lock()
 				pv.childrenDirTmp.DirName = val.Name()
 				pv.childrenDirTmp.DirSize = val.Size()
 				pv.childrenDirTmp.DirLastModified = val.ModTime()
 				pv.childrenDirTmp.DirAccess = val.Mode()
 				pv.childrenDirTmp.DirPath = urlstring
 				pv.childrenDirs = append(pv.childrenDirs, pv.childrenDirTmp)
-				// beego.Info(pv.childrenDirs)
+				pv.mux.Unlock()
 				pv.wg.Done()
 			}(&pv, val)
 		} else {
 			// beego.Info(val.Name())
 			go func(pV *PassValue, val os.FileInfo) {
-				// pv.wg.Add(1)
-				// beego.Info(val.Name())
+				pv.mux.Lock()
 				pv.childrenFilesTmp.FileName = val.Name()
 				pv.childrenFilesTmp.FileSize = val.Size()
 				pv.childrenFilesTmp.FileLastModified = val.ModTime()
 				pv.childrenFilesTmp.FileAccess = val.Mode()
 				pv.childrenFilesTmp.FilePath = urlstring
 				pv.childrenFiles = append(pv.childrenFiles, pv.childrenFilesTmp)
-				// beego.Info(pv.childrenFiles)
+				pv.mux.Unlock()
 				pv.wg.Done()
 			}(&pv, val)
 		}
@@ -238,8 +241,6 @@ func (this *FileController) handleDirectory(file *os.File) {
 
 	// beego.Info(wg)
 	pv.wg.Wait()
-	// beego.Info(pv.childrenDirs)
-	// beego.Info(pv.childrenFiles)
 	fileData := models.DirListing{
 		Name:          urlstring[5:],
 		ChildrenDirs:  pv.childrenDirs,

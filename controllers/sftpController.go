@@ -388,17 +388,20 @@ func (this *STFPController) handleFile(sftpConn *sftp.Client) (err error) {
 		if listFile.IsDir() {
 			go func(pVSFTP *PassValue, listFile os.FileInfo) {
 				// pVSFTP.wg.Add(1)
+				pVSFTP.mux.Lock()
 				pVSFTP.childrenDirTmp.DirName = listFile.Name()
 				pVSFTP.childrenDirTmp.DirSize = listFile.Size()
 				pVSFTP.childrenDirTmp.DirLastModified = listFile.ModTime()
 				pVSFTP.childrenDirTmp.DirAccess = listFile.Mode()
 				pVSFTP.childrenDirTmp.DirPath = BaseUrl + "file" + sftpPath
 				pVSFTP.childrenDirs = append(pVSFTP.childrenDirs, pVSFTP.childrenDirTmp)
+				pVSFTP.mux.Unlock()
 				pVSFTP.wg.Done()
 			}(&pVSFTP, listFile)
 		} else {
 			go func(pVSFTP *PassValue, listFile os.FileInfo) {
 				// pVSFTP.wg.Add(1)
+				pVSFTP.mux.Lock()
 				pVSFTP.childrenFilesTmp.FileName = listFile.Name()
 				pVSFTP.childrenFilesTmp.FileSize = listFile.Size()
 				pVSFTP.childrenFilesTmp.FileLastModified = listFile.ModTime()
@@ -406,6 +409,7 @@ func (this *STFPController) handleFile(sftpConn *sftp.Client) (err error) {
 				pVSFTP.childrenFilesTmp.FilePath = BaseUrl + "file" + sftpPath
 				pVSFTP.childrenFiles = append(pVSFTP.childrenFiles, pVSFTP.childrenFilesTmp)
 				// beego.Info("I am going there")
+				pVSFTP.mux.Unlock()
 				pVSFTP.wg.Done()
 			}(&pVSFTP, listFile)
 		}

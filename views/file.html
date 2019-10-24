@@ -4,69 +4,81 @@
 {{template "navbar" .}}
 
 <body>
-    <div>
-        <nav aria-label="breadcrumb">
-            <ul class="nav nav-tabs">
-                {{range $key, $val := .navUrl}}
-                <li class="nav-item"><a class="nav-link" href="/file/{{$val}}">{{$key}}</a></li>
-                {{end}}
-            </ul>
-        </nav>
-    </div>
-    <div>
-        <div style="width: 49%; float:left;">
-            <table class="table table-sm" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th>FileType</th>
-                        <th>FileName</th>
-                        <th>FileSize</th>
-                        <th>FileLastModified</th>
-                        <th>Operation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .fileData.ChildrenDirs}}
-                    <tr>
-                        <td>{{.DirAccess}}</td>
-                        <td><a href="{{.DirPath}}{{.DirName}}/">{{.DirName}}</a></td>
-                        <td>{{.DirSize}}</td>
-                        <td>{{.DirLastModified}}</td>
-                        <td>
-                            <input type="button" class="btn btn-primary" value="Download" onclick="javascript:window.location.href='{{.DirPath}}?dl={{.DirName}}/';">
-                        </td>
-                    </tr>
-                    {{end}} {{range .fileData.ChildrenFiles}}
-                    <tr>
-                        <td>{{.FileAccess}}</td>
-                        <td><a href="{{.FilePath}}?editfile={{.FileName}}">{{.FileName}}</a></td>
-                        <td>{{.FileSize}}</td>
-                        <td>{{.FileLastModified}}</td>
-                        <td>
-                            <input type="button" class="btn btn-outline-primary" value="Download" onclick="javascript:window.location.href='{{.FilePath}}?dl={{.FileName}}';">
-                        </td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-        </div>
-        <form action="{{.sshUrl}}file/" method="post">
-            <div class="form-group" style="width: 49%; position:fixed; left:51%;">
-                <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea">{{.File.FileContent}}</textarea>
-                <hr>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Directory:</label>
-                    <input type="text" class="form-control" style="width: 100%;" name="savefilepath" placeholder="please input the path you want to save in" value="{{.baseUrl}}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ul class="nav nav-tabs">
+                            {{range $key, $val := .navUrl}}
+                            <li class="nav-item"><a class="nav-link" href="/file/{{$val}}">{{$key}}</a></li>
+                            {{end}}
+                        </ul>
+                    </nav>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">FileName:</label>
-                    <input type="text" class="form-control" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save or find" value="{{.File.FileName}}">
-                </div>
-                <hr>
-                <input type="submit" class="btn btn-primary" name="savefile" value="Save this File">
-                <input type="submit" class="btn btn-primary" name="findfile" value="Find the File">
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div>
+                    <table class="table table-sm" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>FileType</th>
+                                <th>FileName</th>
+                                <th>FileSize</th>
+                                <th>FileLastModified</th>
+                                <th>Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .fileData.ChildrenDirs}}
+                            <tr>
+                                <td>{{.DirAccess}}</td>
+                                <td><a href="{{.DirPath}}{{.DirName}}/">{{.DirName}}</a></td>
+                                <td>{{.DirSize}}</td>
+                                <td>{{.DirLastModified}}</td>
+                                <td>
+                                    <input type="button" class="btn btn-primary" value="Download" onclick="javascript:window.location.href='{{.DirPath}}?dl={{.DirName}}/';">
+                                </td>
+                            </tr>
+                            {{end}} {{range .fileData.ChildrenFiles}}
+                            <tr>
+                                <td>{{.FileAccess}}</td>
+                                <td><a href="{{.FilePath}}?editfile={{.FileName}}">{{.FileName}}</a></td>
+                                <td>{{.FileSize}}</td>
+                                <td>{{.FileLastModified}}</td>
+                                <td>
+                                    <input type="button" class="btn btn-outline-primary" value="Download" onclick="javascript:window.location.href='{{.FilePath}}?dl={{.FileName}}';">
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-6">
+                <div>
+                    <form action="{{.sshUrl}}file/" method="post">
+                        <div class="form-group" style="width: 100%; position:fixed;">
+                            <textarea style="width: 100%;" name="filecontent" class="form-control" rows="15" id="validationTextarea" style="OVERFLOW: hidden" placeholder="Required example textarea">{{.File.FileContent}}</textarea>
+                            <hr>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Directory:</label>
+                                <input type="text" class="form-control" style="width: 100%;" name="savefilepath" placeholder="please input the path you want to save in" value="{{.baseUrl}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">FileName:</label>
+                                <input type="text" class="form-control" style="width: 100%;" name="savefilename" placeholder="Please Input the File Name you want to save or find" value="{{.File.FileName}}">
+                            </div>
+                            <hr>
+                            <input type="submit" class="btn btn-primary" name="savefile" value="Save this File">
+                            <input type="submit" class="btn btn-primary" name="findfile" value="Find the File">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

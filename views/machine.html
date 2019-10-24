@@ -11,79 +11,95 @@
 
 
 <body>
-    <div>
-        <div>
-            <ul>
-                <h3>This is the instructions of using this Host editor</h3>
-                <li>1. Please make sure there is no empty element in this table</li>
-                <li>2. Please choose your prefered auth type</li>
-                <li>3. You can leave port with empty value if your ssh port is 22</li>
-                <li>4. Please Input a short node name witout any special word like space or underscore</li>
-                <li>5. the node name will be regared as the key word to search host info, please do not change it randomly</li>
-            </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <ul>
+                    <h3>This is the instructions of using this Host editor</h3>
+                    <li>1. Please make sure there is no empty element in this table</li>
+                    <li>2. Please choose your prefered auth type</li>
+                    <li>3. You can leave port with empty value if your ssh port is 22</li>
+                    <li>4. Please Input a short node name witout any special word like space or underscore</li>
+                    <li>5. the node name will be regared as the key word to search host info, please do not change it randomly</li>
+                </ul>
+            </div>
         </div>
-        <hr>
-        <form method="POST" action="/machine" enctype="multipart/form-data">
-            <!-- <form method="POST" action="/machine" target="iframehost"></form> -->
-            <table border="1" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th>Node Name</th>
-                        <th>Host Name</th>
-                        <th>Host IP</th>
-                        <th>User</th>
-                        <th>Auth Type</th>
-                        <th>Password</th>
-                        <th>Key-File Path</th>
-                        <th>Port</th>
-                        <th>Operations</th>
-                    </tr>
-                </thead>
-                <hr>
-                <tbody id="step_tbody">
-                    {{range $key,$value := .machine}}
-                    <tr id="step_row2" style="vertical-align: top;">
-                        <td><input style="width: 100%;" type="text" name="nodename" placeholder="Input a name for this node" value="{{$key}}" /></td>
-                        <td><input style="width: 100%;" type="text" name="hostname" placeholder="Input Host Name" value="{{$value.HostName}}" /></td>
-                        <td><input style="width: 100%;" type="text" name="hostip" placeholder="Input Host IP" value="{{$value.HostIp}}" /></td>
-                        <td><input style="width: 100%;" type="text" name="username" placeholder="Input User Name" value="{{$value.UserName}}" /></td>
-                        <td>
-                            <select class="custom-select" name="authtype" id="inputGroupSelect01">
-                                                <option >Choose...</option>
-                                                <option value="password" selected>Password</option>
-                                                <option value="authkey">AuthKey</option>
-                                            </select>
-                        </td>
-                        <td><input style="width: 100%;" type="text" name="password" placeholder="Input Password" value="{{$value.Password}}" /></td>
-                        <td><input style="width: 100%;" type="text" name="keyfiles" placeholder="Input Key File Name and Path" value="{{$value.KeyFile}}" /></td>
-                        <td><input style="width: 100%;" type="text" name="sshport" placeholder="Input Port Num" value="{{$value.SSHPort}}" /></td>
-                        <td>
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
-                            <div class="dropdown-menu">
-                                <input type="button" class="dropdown-item" value="Connect Host" onclick="javascript:window.open('/node/{{$key}}', '_blank');" target="_blank"></input>
+        <div class="row">
+            <div class="col-12">
+                <form method="POST" action="/machine" enctype="multipart/form-data">
+                    <!-- <form method="POST" action="/machine" target="iframehost"></form> -->
+                    <div class="container-confluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <table border="1" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Node Name</th>
+                                            <th>Host Name</th>
+                                            <th>Host IP</th>
+                                            <th>User</th>
+                                            <th>Auth Type</th>
+                                            <th>Password</th>
+                                            <th>Key-File Path</th>
+                                            <th>Port</th>
+                                            <th>Operations</th>
+                                        </tr>
+                                    </thead>
+                                    <hr>
+                                    <tbody id="step_tbody">
+                                        {{range $key,$value := .machine}}
+                                        <tr id="step_row2" style="vertical-align: top;">
+                                            <td><input style="width: 100%;" type="text" name="nodename" placeholder="Input a name for this node" value="{{$key}}" /></td>
+                                            <td><input style="width: 100%;" type="text" name="hostname" placeholder="Input Host Name" value="{{$value.HostName}}" /></td>
+                                            <td><input style="width: 100%;" type="text" name="hostip" placeholder="Input Host IP" value="{{$value.HostIp}}" /></td>
+                                            <td><input style="width: 100%;" type="text" name="username" placeholder="Input User Name" value="{{$value.UserName}}" /></td>
+                                            <td>
+                                                <select class="custom-select" name="authtype" id="inputGroupSelect01">
+                                                                                <option >Choose...</option>
+                                                                                <option value="password" selected>Password</option>
+                                                                                <option value="authkey">AuthKey</option>
+                                                                            </select>
+                                            </td>
+                                            <td><input style="width: 100%;" type="text" name="password" placeholder="Input Password" value="{{$value.Password}}" /></td>
+                                            <td><input style="width: 100%;" type="text" name="keyfiles" placeholder="Input Key File Name and Path" value="{{$value.KeyFile}}" /></td>
+                                            <td><input style="width: 100%;" type="text" name="sshport" placeholder="Input Port Num" value="{{$value.SSHPort}}" /></td>
+                                            <td>
+                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
+                                                <div class="dropdown-menu">
+                                                    <input type="button" class="dropdown-item" value="Connect Host" onclick="javascript:window.open('/node/{{$key}}', '_blank');" target="_blank"></input>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{end}}
+                                    </tbody>
+                                </table>
                             </div>
-                        </td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-
-            <input type="button" id="addstep" value="Add Machine" />
-            <input type="submit" name="exportallmachines" value="Export All" />
-            <input type="submit" name="saveallmachines" value="Save All" />
-            <!-- </form>
-            <form action="/machine/import" , method="POST" enctype="multipart/form-data"> -->
-            <input type="file" name="machinefile">
-            <input type="submit" name="importallmachines" value="Import All">
-        </form>
-        <!-- <iframe id="iframehost" name="iframehost" style="display:none;"></iframe> -->
-        <script>
-            $("#addstep").click(function() {
-                var new_tr = $("#step_row2").html();
-                $("#step_tbody").append("<tr>" + new_tr + "</tr>");
-            })
-        </script>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <hr>
+                                <input type="button" id="addstep" value="Add Machine" />
+                                <input type="submit" name="exportallmachines" value="Export All" />
+                                <input type="submit" name="saveallmachines" value="Save All" />
+                                <!-- </form>
+                                        <form action="/machine/import" , method="POST" enctype="multipart/form-data"> -->
+                                <input type="file" name="machinefile">
+                                <input type="submit" name="importallmachines" value="Import All">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- <iframe id="iframehost" name="iframehost" style="display:none;"></iframe> -->
+            </div>
+        </div>
     </div>
 </body>
+<script>
+    $("#addstep").click(function() {
+        var new_tr = $("#step_row2").html();
+        $("#step_tbody").append("<tr>" + new_tr + "</tr>");
+    })
+</script>
 
 </html>
