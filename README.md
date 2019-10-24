@@ -11,20 +11,20 @@
 Internal web shell windows to run Linux Command as usual.
 * In below page user can customize your Linux machine and click the button to
 have a quick redirection for any machine saved.
-![machine page](image/machine.jpg)
+![machine page](Image/machine.jpg)
 * After SSH to the Linux machine, you can have the main web page to run normal
 Linux commands like below Page.
-![Linux page](image/linux.jpg)
+![Linux page](Image/linux.jpg)
 * The "Host Connect" short cuts allows user to quickly switch different machine
 like below page
-![host-connect page](image/hostconnect.jpg)
+![host-connect page](Image/hostconnect.jpg)
 
 **2. Multi-Linux Machine File System Access & File Operations Handling;**
 > This web application also offers the user a file server for your logged
 Linux machine and do the basic file Operations such as open & download
 * when you click the file button, you can access the file system for this Linux
 machine and do the basic operations.
-![fileserver page](image/file.jpg)
+![fileserver page](Image/file.jpg)
 * you can do the below basic file operations for every file or folder:
 > 1. Open the file and check its content
 > 2. Edit the file and save its content
@@ -36,25 +36,25 @@ machine and do the basic operations.
 and appointed services check.
 * In the main page, user can click "Host Info" button to check the performance
 include CPU, Disk & Memory Usage for your current machine.
-![hostinfo page](image/hostinfo.jpg)
+![hostinfo page](Image/hostinfo.jpg)
 * And in the same page, user can click "Services" button to check the assigned services, and these services can be assigned by import designed json file.
 Currently the function has been designed, but the UI presentations has not been designed.
-![services page](image/Services.jpg)
+![services page](Image/Services.jpg)
 * the json file can be edited and exported in the below service page.
-![services edit page](image/service_edit.jpg)
+![services edit page](Image/service_edit.jpg)
 
 **4. Multi-Linux Machine Task Group One-Click Executions;**
 > This web application allows user to customize a set of command group, and user can do the assigned commands for each node by only one-click.
 * In the main page, you can click the "task" button to call the task executions
 console, and run every task group by one-click like below page.
-![task page](image/task.jpg)
+![task page](Image/task.jpg)
 * And you can also use the task editor to generate different task json file, and then you can use these json file to have different task job.
-![task edit page](image/task_edit.jpg)
+![task edit page](Image/task_edit.jpg)
 
 **5. Embeded Documents in UI Page;**
 > This web application allows user to have a online document, user can have a better experience when they try to install packages or do some environment preparing.
 * you can click the "step" button to call this document panel like below page.
-![document page](image/document.jpg)
+![document page](Image/document.jpg)
 
 ### How To Deploy ###
 * this is a golang coded application, so this is very easy to deploy this application in your environment without any dependencies installed.
