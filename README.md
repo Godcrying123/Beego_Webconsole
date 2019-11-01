@@ -39,7 +39,7 @@ include CPU, Disk & Memory Usage for your current machine.
 ![hostinfo page](image/hostinfo.jpg)
 * And in the same page, user can click "Services" button to check the assigned services, and these services can be assigned by import designed json file.
 Currently the function has been designed, but the UI presentations has not been designed.
-![services page](image/Services.jpg)
+![services page](image/services.jpg)
 * the json file can be edited and exported in the below service page.
 ![services edit page](image/service_edit.jpg)
 
